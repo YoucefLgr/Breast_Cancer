@@ -44,8 +44,11 @@ splits:
 modele:
   architecture: resnet18
   batch_size: 128
-  epochs_tete: 2        # phase A : backbone gelé
-  epochs_finetune: 2    # phase B : fine-tuning layer3/layer4 + tête
+  # Sur GPU T4 (Colab), un epoch ResNet18/96px/24k patchs prend quelques dizaines de
+  # secondes : 8 epochs max par phase laisse de la marge à l'arrêt anticipé (patience=2
+  # dans notebooks/03_cnn.ipynb) tout en restant très en dessous du budget d'1h.
+  epochs_tete: 8         # phase A : backbone gelé
+  epochs_finetune: 8     # phase B : fine-tuning layer3/layer4 + tête
   lr_tete: 1.0e-3
   lr_finetune: 1.0e-4
   weight_decay: 1.0e-4

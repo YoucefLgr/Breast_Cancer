@@ -1,5 +1,5 @@
 {
-  "horodatage_utc": "2026-11-17T17:34:19.485825+00:00",
+  "horodatage_utc": "2026-11-17T18:00:41.979651+00:00",
   "protocole": {
     "entrainement": "split train (hopitaux 0, 3, 4)",
     "reglage_hyperparametres": "val_ood (hopital 1), critere ROC-AUC",

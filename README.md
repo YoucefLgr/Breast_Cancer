@@ -21,13 +21,14 @@ SPE1_notebook_demarrage.ipynb   notebook de démarrage fourni par l'école (réf
 
 ### 1. Environnement
 
-**Colab / Kaggle (recommandé pour l'entraînement)** : la plupart des dépendances sont préinstallées. Installer le reste :
+**Colab / Kaggle (recommandé pour l'entraînement, Phases 4/5)** : chaque notebook contient, juste après le titre, une cellule qui clone automatiquement ce dépôt et installe `requirements.txt` — rien à faire à la main.
 
-```bash
-pip install -r requirements.txt
-```
+1. Sur [colab.research.google.com](https://colab.research.google.com), *Fichier → Ouvrir un notebook → GitHub*, coller `https://github.com/YoucefLgr/Breast_Cancer` et choisir le notebook voulu (ex. `notebooks/03_cnn.ipynb`).
+2. *Exécution → Modifier le type d'exécution → GPU (T4)*.
+3. *Exécution → Tout exécuter*. La première cellule de code clone le dépôt dans `/content/Breast_Cancer`, s'y place et installe les dépendances manquantes ; les cellules suivantes fonctionnent alors exactement comme en local.
+4. À la fin, récupérer `outputs/metrics/*.json` et `outputs/figures/*.png` (panneau Fichiers de Colab, dans `/content/Breast_Cancer/outputs/`) pour les rapatrier dans le dépôt local (`git add`/`git commit`/`git push`, ou téléchargement manuel puis copie).
 
-Sur Colab : *Exécution → Modifier le type d'exécution → GPU (T4)*.
+Sur Kaggle, le même mécanisme clone dans `/kaggle/working/Breast_Cancer` (activer un accélérateur GPU dans les paramètres du notebook).
 
 **Local** : un GPU est recommandé pour les phases 4 et 5 (CNN). Sans GPU, seules la Phase 3 (référence simple) et l'exploration (Phase 2) sont raisonnables en temps de calcul ; `src/utils.get_device()` retombe sur CPU avec un avertissement.
 
@@ -55,7 +56,7 @@ Pour obtenir les images (patchs PNG 96×96), reconstruire le parquet depuis Hugg
 | `06_eval_finale.ipynb` | 6 + 8 | **Test unique sur l'hôpital 2**, métriques finales, faux négatifs |
 | `07_interpretabilite.ipynb` | 8 | Grad-CAM |
 
-Chaque notebook commence par :
+Chaque notebook commence par la cellule de bootstrap Colab/Kaggle (sans effet en local), puis :
 
 ```python
 import sys, os
