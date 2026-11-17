@@ -1,0 +1,202 @@
+{
+  "horodatage_utc": "2026-11-17T20:03:07.635911+00:00",
+  "quick_mode": false,
+  "architecture": "resnet18",
+  "protocole": {
+    "entrainement": "train (H0/3/4)",
+    "selection": "val_ood (H1)",
+    "hopital_2": "non utilise (reserve Phase 6)"
+  },
+  "historique_phase_A": [
+    {
+      "epoch": 1,
+      "perte_train": 0.31483862408002217,
+      "auc_val_ood": 0.8986417499999999,
+      "duree_s": 43.81198716163635
+    },
+    {
+      "epoch": 2,
+      "perte_train": 0.24300826768080394,
+      "auc_val_ood": 0.90614675,
+      "duree_s": 42.53086471557617
+    },
+    {
+      "epoch": 3,
+      "perte_train": 0.23407733845710754,
+      "auc_val_ood": 0.9063414999999999,
+      "duree_s": 41.569263219833374
+    },
+    {
+      "epoch": 4,
+      "perte_train": 0.228079625527064,
+      "auc_val_ood": 0.9147767499999999,
+      "duree_s": 41.070292949676514
+    },
+    {
+      "epoch": 5,
+      "perte_train": 0.22821987481911976,
+      "auc_val_ood": 0.9050684999999999,
+      "duree_s": 42.16821813583374
+    },
+    {
+      "epoch": 6,
+      "perte_train": 0.22942907710870106,
+      "auc_val_ood": 0.9110502500000001,
+      "duree_s": 41.12599444389343
+    }
+  ],
+  "historique_phase_B": [
+    {
+      "epoch": 1,
+      "perte_train": 0.1407275775273641,
+      "auc_val_ood": 0.9679505,
+      "duree_s": 45.998157024383545
+    },
+    {
+      "epoch": 2,
+      "perte_train": 0.08260303108890851,
+      "auc_val_ood": 0.972396375,
+      "duree_s": 44.82649803161621
+    },
+    {
+      "epoch": 3,
+      "perte_train": 0.06484460930029551,
+      "auc_val_ood": 0.97343875,
+      "duree_s": 45.33135414123535
+    },
+    {
+      "epoch": 4,
+      "perte_train": 0.05626769448320071,
+      "auc_val_ood": 0.9662804999999999,
+      "duree_s": 44.840421199798584
+    },
+    {
+      "epoch": 5,
+      "perte_train": 0.05196038466195266,
+      "auc_val_ood": 0.9717685,
+      "duree_s": 45.12211990356445
+    }
+  ],
+  "meilleur_auc_val_ood": 0.97343875,
+  "metriques_seuil_0.5": {
+    "val_ood": [
+      {
+        "hopital": "H1 (validation hors distribution)",
+        "n": 4000,
+        "roc_auc": 0.9734,
+        "rappel": 0.9385,
+        "precision": 0.8792,
+        "f1": 0.9079,
+        "accuracy": 0.9048,
+        "vn": 1742,
+        "fp": 258,
+        "fn": 123,
+        "vp": 1877
+      },
+      {
+        "hopital": "ensemble",
+        "n": 4000,
+        "roc_auc": 0.9734,
+        "rappel": 0.9385,
+        "precision": 0.8792,
+        "f1": 0.9079,
+        "accuracy": 0.9048,
+        "vn": 1742,
+        "fp": 258,
+        "fn": 123,
+        "vp": 1877
+      }
+    ],
+    "id_val": [
+      {
+        "hopital": "H0 (entraînement)",
+        "n": 1000,
+        "roc_auc": 0.9936,
+        "rappel": 0.962,
+        "precision": 0.9776,
+        "f1": 0.9698,
+        "accuracy": 0.97,
+        "vn": 489,
+        "fp": 11,
+        "fn": 19,
+        "vp": 481
+      },
+      {
+        "hopital": "H3 (entraînement)",
+        "n": 1000,
+        "roc_auc": 0.9956,
+        "rappel": 0.954,
+        "precision": 0.9815,
+        "f1": 0.9675,
+        "accuracy": 0.968,
+        "vn": 491,
+        "fp": 9,
+        "fn": 23,
+        "vp": 477
+      },
+      {
+        "hopital": "H4 (entraînement)",
+        "n": 1000,
+        "roc_auc": 0.9981,
+        "rappel": 0.982,
+        "precision": 0.9859,
+        "f1": 0.984,
+        "accuracy": 0.984,
+        "vn": 493,
+        "fp": 7,
+        "fn": 9,
+        "vp": 491
+      },
+      {
+        "hopital": "ensemble",
+        "n": 3000,
+        "roc_auc": 0.996,
+        "rappel": 0.966,
+        "precision": 0.9817,
+        "f1": 0.9738,
+        "accuracy": 0.974,
+        "vn": 1473,
+        "fp": 27,
+        "fn": 51,
+        "vp": 1449
+      }
+    ]
+  },
+  "choix_seuil": {
+    "seuil": 0.31,
+    "rappel_cible": 0.95,
+    "rappel_obtenu": 0.9515,
+    "seuil_realisable": true
+  },
+  "metriques_seuil_ajuste": {
+    "val_ood": [
+      {
+        "hopital": "H1 (validation hors distribution)",
+        "n": 4000,
+        "roc_auc": 0.9734,
+        "rappel": 0.9515,
+        "precision": 0.8488,
+        "f1": 0.8972,
+        "accuracy": 0.891,
+        "vn": 1661,
+        "fp": 339,
+        "fn": 97,
+        "vp": 1903
+      },
+      {
+        "hopital": "ensemble",
+        "n": 4000,
+        "roc_auc": 0.9734,
+        "rappel": 0.9515,
+        "precision": 0.8488,
+        "f1": 0.8972,
+        "accuracy": 0.891,
+        "vn": 1661,
+        "fp": 339,
+        "fn": 97,
+        "vp": 1903
+      }
+    ]
+  },
+  "reference_phase3_auc_val_ood": 0.898
+}
