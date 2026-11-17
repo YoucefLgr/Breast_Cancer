@@ -1,0 +1,66 @@
+# config.yaml — source unique de vérité pour les chemins, les seeds et les hyperparamètres.
+# Ne jamais coder un chemin ou un hyperparamètre en dur ailleurs : lire ce fichier via src/utils.py::load_config().
+
+# --- Reproductibilité --------------------------------------------------------
+seed: 42
+seeds_robustesse: [42, 1337, 2024]   # phase 5 : moyenne ± écart-type sur plusieurs graines
+
+# --- Environnement -------------------------------------------------------
+# "auto" détecte Colab / Kaggle / local au runtime (voir src/utils.py::detect_environment()).
+environnement: auto
+
+# --- Chemins -------------------------------------------------------------
+# Tous relatifs à la racine du dépôt. Résolus par src/utils.py::resolve_path().
+chemins:
+  pack_dir: donnees
+  ids_csv: donnees/ids_sous_echantillon.csv
+  metadata_zip: donnees/metadata_complete.zip
+  stages_csv: donnees/stages.csv
+  # Le parquet des 39 000 patchs n'est PAS dans le pack (pas d'images) : il est reconstruit
+  # depuis Hugging Face (wltjr1007/Camelyon17-WILDS) par notebooks/00 ou la cellule
+  # reconstruire_depuis_hf() du notebook de démarrage, puis mis en cache ici.
+  parquet_cache: data/raw/camelyon17_sous_echantillon.parquet
+  outputs_dir: outputs
+  figures_dir: outputs/figures
+  metrics_dir: outputs/metrics
+  models_dir: outputs/models
+  rapport_dir: outputs/rapport
+
+# --- Données / splits ------------------------------------------------------
+donnees:
+  taille_patch_source: 96      # taille native des patchs WILDS, en pixels
+  taille_entree_modele: 96     # 224 = piste à tester et justifier (phase 4)
+  normalisation: imagenet      # moyenne/std ImageNet, car transfert learning
+
+# Découpage officiel WILDS — NE PAS MODIFIER. Toute validation interne supplémentaire
+# (ex. GroupKFold pour régler des hyperparamètres) doit grouper par `slide`, jamais par patch.
+splits:
+  train:   {split: train,   hopitaux: [0, 3, 4]}                 # entraînement
+  id_val:  {split: id_val,  hopitaux: [0, 3, 4]}                 # mêmes lames que train, surestime la perf
+  val_ood: {split: val_ood, hopitaux: [1]}                        # tous les réglages et choix se font ici
+  test:    {split: test,    hopitaux: [2], verrou_usage_unique: true}  # hôpital 2 — UNE SEULE FOIS, phase 6
+
+# --- Modèle / entraînement (valeurs de départ, ajustées en phase 3/4) ------
+modele:
+  architecture: resnet18
+  batch_size: 128
+  epochs_tete: 2        # phase A : backbone gelé
+  epochs_finetune: 2    # phase B : fine-tuning layer3/layer4 + tête
+  lr_tete: 1.0e-3
+  lr_finetune: 1.0e-4
+  weight_decay: 1.0e-4
+
+# --- Évaluation ------------------------------------------------------------
+evaluation:
+  rappel_cible: 0.95     # seuil de décision choisi sur val_ood pour viser ce rappel minimal
+  seuil_defaut: 0.5       # seuil de référence, comparé au seuil ajusté
+
+# --- Agrégation patch -> lame -> patiente (phase 7) ------------------------
+agregation:
+  seuils_classe_lame_mm:
+    itc_max: 0.2
+    micro_max: 2.0
+    # au-delà de micro_max : macro
+  # Résolution µm/pixel au niveau des patchs : À VÉRIFIER dans la doc/papier WILDS avant usage
+  # (le pas de grille observé dans les métadonnées est 32 px, pas 96 — à élucider en phase 7).
+  resolution_um_par_pixel: null

@@ -1,0 +1,524 @@
+{
+  "horodatage_utc": "2026-11-17T17:34:19.485825+00:00",
+  "protocole": {
+    "entrainement": "split train (hopitaux 0, 3, 4)",
+    "reglage_hyperparametres": "val_ood (hopital 1), critere ROC-AUC",
+    "seuil": 0.5,
+    "hopital_2": "non utilise (reserve Phase 6)"
+  },
+  "n_variables": {
+    "couleur": 96,
+    "texture": 28,
+    "couleur+texture": 124
+  },
+  "grille_complete": [
+    {
+      "variante": "couleur",
+      "modele": "logreg",
+      "params": "{'C': 0.01}",
+      "auc_id_val": 0.9741,
+      "auc_val_ood": 0.7807
+    },
+    {
+      "variante": "couleur",
+      "modele": "logreg",
+      "params": "{'C': 0.1}",
+      "auc_id_val": 0.9793,
+      "auc_val_ood": 0.7947
+    },
+    {
+      "variante": "couleur",
+      "modele": "logreg",
+      "params": "{'C': 1.0}",
+      "auc_id_val": 0.9803,
+      "auc_val_ood": 0.8125
+    },
+    {
+      "variante": "couleur",
+      "modele": "logreg",
+      "params": "{'C': 10.0}",
+      "auc_id_val": 0.9803,
+      "auc_val_ood": 0.8161
+    },
+    {
+      "variante": "couleur",
+      "modele": "rf",
+      "params": "{'max_depth': None, 'min_samples_leaf': 1}",
+      "auc_id_val": 0.9934,
+      "auc_val_ood": 0.8729
+    },
+    {
+      "variante": "couleur",
+      "modele": "rf",
+      "params": "{'max_depth': None, 'min_samples_leaf': 5}",
+      "auc_id_val": 0.9923,
+      "auc_val_ood": 0.8747
+    },
+    {
+      "variante": "couleur",
+      "modele": "rf",
+      "params": "{'max_depth': 15, 'min_samples_leaf': 1}",
+      "auc_id_val": 0.9921,
+      "auc_val_ood": 0.8825
+    },
+    {
+      "variante": "couleur",
+      "modele": "rf",
+      "params": "{'max_depth': 15, 'min_samples_leaf': 5}",
+      "auc_id_val": 0.9916,
+      "auc_val_ood": 0.8823
+    },
+    {
+      "variante": "texture",
+      "modele": "logreg",
+      "params": "{'C': 0.01}",
+      "auc_id_val": 0.9313,
+      "auc_val_ood": 0.8825
+    },
+    {
+      "variante": "texture",
+      "modele": "logreg",
+      "params": "{'C': 0.1}",
+      "auc_id_val": 0.9337,
+      "auc_val_ood": 0.8877
+    },
+    {
+      "variante": "texture",
+      "modele": "logreg",
+      "params": "{'C': 1.0}",
+      "auc_id_val": 0.9334,
+      "auc_val_ood": 0.8881
+    },
+    {
+      "variante": "texture",
+      "modele": "logreg",
+      "params": "{'C': 10.0}",
+      "auc_id_val": 0.9331,
+      "auc_val_ood": 0.8881
+    },
+    {
+      "variante": "texture",
+      "modele": "rf",
+      "params": "{'max_depth': None, 'min_samples_leaf': 1}",
+      "auc_id_val": 0.965,
+      "auc_val_ood": 0.8449
+    },
+    {
+      "variante": "texture",
+      "modele": "rf",
+      "params": "{'max_depth': None, 'min_samples_leaf': 5}",
+      "auc_id_val": 0.9627,
+      "auc_val_ood": 0.8536
+    },
+    {
+      "variante": "texture",
+      "modele": "rf",
+      "params": "{'max_depth': 15, 'min_samples_leaf': 1}",
+      "auc_id_val": 0.9617,
+      "auc_val_ood": 0.8494
+    },
+    {
+      "variante": "texture",
+      "modele": "rf",
+      "params": "{'max_depth': 15, 'min_samples_leaf': 5}",
+      "auc_id_val": 0.9617,
+      "auc_val_ood": 0.854
+    },
+    {
+      "variante": "couleur+texture",
+      "modele": "logreg",
+      "params": "{'C': 0.01}",
+      "auc_id_val": 0.9816,
+      "auc_val_ood": 0.853
+    },
+    {
+      "variante": "couleur+texture",
+      "modele": "logreg",
+      "params": "{'C': 0.1}",
+      "auc_id_val": 0.9858,
+      "auc_val_ood": 0.851
+    },
+    {
+      "variante": "couleur+texture",
+      "modele": "logreg",
+      "params": "{'C': 1.0}",
+      "auc_id_val": 0.9865,
+      "auc_val_ood": 0.8565
+    },
+    {
+      "variante": "couleur+texture",
+      "modele": "logreg",
+      "params": "{'C': 10.0}",
+      "auc_id_val": 0.9864,
+      "auc_val_ood": 0.8583
+    },
+    {
+      "variante": "couleur+texture",
+      "modele": "rf",
+      "params": "{'max_depth': None, 'min_samples_leaf': 1}",
+      "auc_id_val": 0.9944,
+      "auc_val_ood": 0.8958
+    },
+    {
+      "variante": "couleur+texture",
+      "modele": "rf",
+      "params": "{'max_depth': None, 'min_samples_leaf': 5}",
+      "auc_id_val": 0.9933,
+      "auc_val_ood": 0.8964
+    },
+    {
+      "variante": "couleur+texture",
+      "modele": "rf",
+      "params": "{'max_depth': 15, 'min_samples_leaf': 1}",
+      "auc_id_val": 0.9935,
+      "auc_val_ood": 0.8966
+    },
+    {
+      "variante": "couleur+texture",
+      "modele": "rf",
+      "params": "{'max_depth': 15, 'min_samples_leaf': 5}",
+      "auc_id_val": 0.9927,
+      "auc_val_ood": 0.8975
+    }
+  ],
+  "meilleurs_par_variante": [
+    {
+      "variante": "couleur",
+      "modele": "logreg",
+      "params": "{'C': 10.0}",
+      "auc_id_val": 0.9803,
+      "auc_val_ood": 0.8161
+    },
+    {
+      "variante": "couleur",
+      "modele": "rf",
+      "params": "{'max_depth': 15, 'min_samples_leaf': 1}",
+      "auc_id_val": 0.9921,
+      "auc_val_ood": 0.8825
+    },
+    {
+      "variante": "couleur+texture",
+      "modele": "logreg",
+      "params": "{'C': 10.0}",
+      "auc_id_val": 0.9864,
+      "auc_val_ood": 0.8583
+    },
+    {
+      "variante": "couleur+texture",
+      "modele": "rf",
+      "params": "{'max_depth': 15, 'min_samples_leaf': 5}",
+      "auc_id_val": 0.9927,
+      "auc_val_ood": 0.8975
+    },
+    {
+      "variante": "texture",
+      "modele": "logreg",
+      "params": "{'C': 1.0}",
+      "auc_id_val": 0.9334,
+      "auc_val_ood": 0.8881
+    },
+    {
+      "variante": "texture",
+      "modele": "rf",
+      "params": "{'max_depth': 15, 'min_samples_leaf': 5}",
+      "auc_id_val": 0.9617,
+      "auc_val_ood": 0.854
+    }
+  ],
+  "importances_par_famille": {
+    "couleur_rgb": 0.4332,
+    "couleur_hsv": 0.3949,
+    "texture": 0.1719
+  },
+  "top15_variables": {
+    "rgb_R_11": 0.0654,
+    "hsv_V_12": 0.053,
+    "rgb_R_12": 0.0477,
+    "lbp_P16R2_11": 0.0329,
+    "rgb_R_13": 0.0303,
+    "hsv_H_14": 0.0289,
+    "hsv_V_13": 0.0268,
+    "hsv_H_11": 0.0263,
+    "hsv_H_15": 0.0251,
+    "hsv_V_11": 0.0247,
+    "rgb_R_10": 0.0238,
+    "rgb_R_6": 0.0213,
+    "rgb_B_10": 0.0197,
+    "rgb_B_9": 0.0189,
+    "hsv_S_2": 0.0179
+  },
+  "metriques_par_hopital": {
+    "logreg__train": [
+      {
+        "hopital": "H0 (entraînement)",
+        "n": 8000,
+        "roc_auc": 0.9781,
+        "rappel": 0.9148,
+        "precision": 0.944,
+        "f1": 0.9292,
+        "accuracy": 0.9302,
+        "vn": 3783,
+        "fp": 217,
+        "fn": 341,
+        "vp": 3659
+      },
+      {
+        "hopital": "H3 (entraînement)",
+        "n": 8000,
+        "roc_auc": 0.9864,
+        "rappel": 0.926,
+        "precision": 0.9626,
+        "f1": 0.9439,
+        "accuracy": 0.945,
+        "vn": 3856,
+        "fp": 144,
+        "fn": 296,
+        "vp": 3704
+      },
+      {
+        "hopital": "H4 (entraînement)",
+        "n": 8000,
+        "roc_auc": 0.9908,
+        "rappel": 0.9678,
+        "precision": 0.9551,
+        "f1": 0.9614,
+        "accuracy": 0.9611,
+        "vn": 3818,
+        "fp": 182,
+        "fn": 129,
+        "vp": 3871
+      },
+      {
+        "hopital": "ensemble",
+        "n": 24000,
+        "roc_auc": 0.9859,
+        "rappel": 0.9362,
+        "precision": 0.9539,
+        "f1": 0.9449,
+        "accuracy": 0.9455,
+        "vn": 11457,
+        "fp": 543,
+        "fn": 766,
+        "vp": 11234
+      }
+    ],
+    "logreg__id_val": [
+      {
+        "hopital": "H0 (entraînement)",
+        "n": 1000,
+        "roc_auc": 0.979,
+        "rappel": 0.91,
+        "precision": 0.9305,
+        "f1": 0.9201,
+        "accuracy": 0.921,
+        "vn": 466,
+        "fp": 34,
+        "fn": 45,
+        "vp": 455
+      },
+      {
+        "hopital": "H3 (entraînement)",
+        "n": 1000,
+        "roc_auc": 0.9876,
+        "rappel": 0.908,
+        "precision": 0.9598,
+        "f1": 0.9332,
+        "accuracy": 0.935,
+        "vn": 481,
+        "fp": 19,
+        "fn": 46,
+        "vp": 454
+      },
+      {
+        "hopital": "H4 (entraînement)",
+        "n": 1000,
+        "roc_auc": 0.9905,
+        "rappel": 0.962,
+        "precision": 0.9563,
+        "f1": 0.9591,
+        "accuracy": 0.959,
+        "vn": 478,
+        "fp": 22,
+        "fn": 19,
+        "vp": 481
+      },
+      {
+        "hopital": "ensemble",
+        "n": 3000,
+        "roc_auc": 0.9864,
+        "rappel": 0.9267,
+        "precision": 0.9488,
+        "f1": 0.9376,
+        "accuracy": 0.9383,
+        "vn": 1425,
+        "fp": 75,
+        "fn": 110,
+        "vp": 1390
+      }
+    ],
+    "logreg__val_ood": [
+      {
+        "hopital": "H1 (validation hors distribution)",
+        "n": 4000,
+        "roc_auc": 0.8583,
+        "rappel": 0.7725,
+        "precision": 0.7879,
+        "f1": 0.7801,
+        "accuracy": 0.7822,
+        "vn": 1584,
+        "fp": 416,
+        "fn": 455,
+        "vp": 1545
+      },
+      {
+        "hopital": "ensemble",
+        "n": 4000,
+        "roc_auc": 0.8583,
+        "rappel": 0.7725,
+        "precision": 0.7879,
+        "f1": 0.7801,
+        "accuracy": 0.7822,
+        "vn": 1584,
+        "fp": 416,
+        "fn": 455,
+        "vp": 1545
+      }
+    ],
+    "rf__train": [
+      {
+        "hopital": "H0 (entraînement)",
+        "n": 8000,
+        "roc_auc": 0.9986,
+        "rappel": 0.9622,
+        "precision": 0.9933,
+        "f1": 0.9775,
+        "accuracy": 0.9779,
+        "vn": 3974,
+        "fp": 26,
+        "fn": 151,
+        "vp": 3849
+      },
+      {
+        "hopital": "H3 (entraînement)",
+        "n": 8000,
+        "roc_auc": 0.999,
+        "rappel": 0.9525,
+        "precision": 0.9966,
+        "f1": 0.9741,
+        "accuracy": 0.9746,
+        "vn": 3987,
+        "fp": 13,
+        "fn": 190,
+        "vp": 3810
+      },
+      {
+        "hopital": "H4 (entraînement)",
+        "n": 8000,
+        "roc_auc": 0.9993,
+        "rappel": 0.9828,
+        "precision": 0.9894,
+        "f1": 0.9861,
+        "accuracy": 0.9861,
+        "vn": 3958,
+        "fp": 42,
+        "fn": 69,
+        "vp": 3931
+      },
+      {
+        "hopital": "ensemble",
+        "n": 24000,
+        "roc_auc": 0.9989,
+        "rappel": 0.9658,
+        "precision": 0.9931,
+        "f1": 0.9793,
+        "accuracy": 0.9795,
+        "vn": 11919,
+        "fp": 81,
+        "fn": 410,
+        "vp": 11590
+      }
+    ],
+    "rf__id_val": [
+      {
+        "hopital": "H0 (entraînement)",
+        "n": 1000,
+        "roc_auc": 0.9913,
+        "rappel": 0.922,
+        "precision": 0.9746,
+        "f1": 0.9476,
+        "accuracy": 0.949,
+        "vn": 488,
+        "fp": 12,
+        "fn": 39,
+        "vp": 461
+      },
+      {
+        "hopital": "H3 (entraînement)",
+        "n": 1000,
+        "roc_auc": 0.9929,
+        "rappel": 0.9,
+        "precision": 0.9868,
+        "f1": 0.9414,
+        "accuracy": 0.944,
+        "vn": 494,
+        "fp": 6,
+        "fn": 50,
+        "vp": 450
+      },
+      {
+        "hopital": "H4 (entraînement)",
+        "n": 1000,
+        "roc_auc": 0.9945,
+        "rappel": 0.96,
+        "precision": 0.9776,
+        "f1": 0.9687,
+        "accuracy": 0.969,
+        "vn": 489,
+        "fp": 11,
+        "fn": 20,
+        "vp": 480
+      },
+      {
+        "hopital": "ensemble",
+        "n": 3000,
+        "roc_auc": 0.9927,
+        "rappel": 0.9273,
+        "precision": 0.9796,
+        "f1": 0.9527,
+        "accuracy": 0.954,
+        "vn": 1471,
+        "fp": 29,
+        "fn": 109,
+        "vp": 1391
+      }
+    ],
+    "rf__val_ood": [
+      {
+        "hopital": "H1 (validation hors distribution)",
+        "n": 4000,
+        "roc_auc": 0.8975,
+        "rappel": 0.7885,
+        "precision": 0.846,
+        "f1": 0.8163,
+        "accuracy": 0.8225,
+        "vn": 1713,
+        "fp": 287,
+        "fn": 423,
+        "vp": 1577
+      },
+      {
+        "hopital": "ensemble",
+        "n": 4000,
+        "roc_auc": 0.8975,
+        "rappel": 0.7885,
+        "precision": 0.846,
+        "f1": 0.8163,
+        "accuracy": 0.8225,
+        "vn": 1713,
+        "fp": 287,
+        "fn": 423,
+        "vp": 1577
+      }
+    ]
+  }
+}

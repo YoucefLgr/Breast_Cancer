@@ -1,0 +1,19 @@
+# Sur Colab/Kaggle, l'essentiel est déjà installé. En local (GPU conseillé) :
+torch>=2.2
+torchvision>=0.17
+pandas>=2.2
+pyarrow>=15
+scikit-learn>=1.4
+matplotlib>=3.8
+pillow>=10
+pyyaml>=6.0        # config.yaml (src/utils.py)
+
+# Phase 3 — référence simple : texture (LBP/GLCM), parallélisation de l'extraction
+scikit-image>=0.22
+joblib>=1.3
+
+# Phase 5 — robustesse : normalisation de coloration (Macenko/Reinhard), composantes connexes (Phase 7)
+scipy>=1.12
+
+# Phase 8 — interprétabilité
+grad-cam>=1.5       # pytorch-grad-cam, import name: pytorch_grad_cam

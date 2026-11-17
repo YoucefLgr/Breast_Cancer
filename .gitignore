@@ -1,0 +1,27 @@
+# Cache de données volumineux, reconstruit depuis Hugging Face — ne jamais committer
+data/raw/*.parquet
+data/interim/
+
+# Checkpoints de modèles (gros fichiers) — les métriques JSON suffisent pour le rapport
+outputs/models/*.pt
+outputs/models/*.pth
+
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.pytest_cache/
+*.egg-info/
+
+# Environnements virtuels
+.venv/
+venv/
+
+# OS / éditeurs
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Fichier de verrou de la Phase 6 (hôpital 2, usage unique) : il doit rester commité
+# une fois créé pour prouver qu'il n'a servi qu'une fois — ne pas l'ignorer.
+!outputs/.test_consomme.json
