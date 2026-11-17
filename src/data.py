@@ -208,39 +208,110 @@ def reconstruire_depuis_hf(
 
 
 # --------------------------------------------------------------------------- #
-# Dataset PyTorch (Phase 2 §6)
+# Dataset PyTorch (Phase 2 §6) et variantes anti-shift (Phase 5)
 # --------------------------------------------------------------------------- #
-def transform_entrainement(cfg: dict[str, Any]):
-    """Resize vers la taille d'entrée du modèle, augmentations géométriques
-    (flips horizontal/vertical, rotation aléatoire multiple de 90°), normalisation ImageNet.
+VARIANTES_PREPROCESSING = ("base", "augmentation_couleur", "normalisation_coloration", "niveaux_gris")
 
-    Seulement des augmentations géométriques ici : elles ne changent pas la couleur, donc ne
-    masquent pas le shift inter-hôpital qu'on veut précisément étudier en Phase 2 et traiter
-    en Phase 5 (augmentation de couleur dédiée, sur un protocole séparé).
+
+class NormalisationReinhard:
+    """Normalisation de coloration de Reinhard (2001) : transfert des statistiques
+    moyenne/écart-type d'une image en espace LAB vers une « cible » commune.
+
+    Appliquée à l'entraînement ET à l'évaluation (contrairement à une augmentation) : le but
+    n'est pas de varier la couleur vue par le modèle mais de ramener systématiquement toutes
+    les images, de n'importe quel hôpital, vers la même distribution de couleur — pour que le
+    modèle n'ait plus rien à apprendre à partir de la teinte propre à un hôpital.
+    """
+
+    def __init__(self, moyenne_cible: np.ndarray, std_cible: np.ndarray):
+        self.moyenne_cible = np.asarray(moyenne_cible, dtype=np.float64)
+        self.std_cible = np.asarray(std_cible, dtype=np.float64)
+
+    def __call__(self, img: Image.Image) -> Image.Image:
+        from skimage.color import lab2rgb, rgb2lab
+
+        arr = np.asarray(img, dtype=np.float64) / 255.0
+        lab = rgb2lab(arr)
+        m, s = lab.reshape(-1, 3).mean(0), lab.reshape(-1, 3).std(0) + 1e-6
+        lab_norm = (lab - m) / s * self.std_cible + self.moyenne_cible
+        lab_norm[..., 0] = np.clip(lab_norm[..., 0], 0, 100)
+        lab_norm[..., 1:] = np.clip(lab_norm[..., 1:], -127, 127)
+        rgb_norm = np.clip(lab2rgb(lab_norm), 0, 1)
+        return Image.fromarray((rgb_norm * 255).astype(np.uint8))
+
+
+def calculer_cible_reinhard(df: pd.DataFrame, n: int = 200, seed: int = 42) -> tuple[np.ndarray, np.ndarray]:
+    """Statistiques LAB (moyenne, écart-type) cibles pour `NormalisationReinhard`, calculées
+    sur `n` patchs de `df` (passer un sous-ensemble d'un seul hôpital d'entraînement, ex.
+    `df[(df.split == "train") & (df.center == 0)]`, pour une cible stable et reproductible).
+    Moyenne sur plusieurs patchs plutôt qu'une seule image de référence : moins sensible à un
+    patch atypique.
+    """
+    from skimage.color import rgb2lab
+
+    ech = df.sample(min(n, len(df)), random_state=seed)
+    labs = []
+    for b in ech.image.values:
+        arr = np.asarray(ouvrir(b), dtype=np.float64) / 255.0
+        labs.append(rgb2lab(arr).reshape(-1, 3))
+    labs = np.concatenate(labs)
+    return labs.mean(0), labs.std(0)
+
+
+def construire_transforms(cfg: dict[str, Any], variante: str = "base", cible_reinhard=None):
+    """Construit `(transform_train, transform_eval)` pour une `variante` de prétraitement :
+
+    - `"base"` : resize + augmentations géométriques (flips, rotation multiple de 90°) +
+      normalisation ImageNet. Aucune augmentation ne touche la couleur (Phase 2/4).
+    - `"augmentation_couleur"` : en plus, `ColorJitter` **à l'entraînement seulement** —
+      le modèle voit des couleurs aléatoirement perturbées et ne peut plus se fier à une
+      teinte fixe pour deviner l'hôpital.
+    - `"normalisation_coloration"` : `NormalisationReinhard(*cible_reinhard)` appliquée à
+      l'entraînement ET à l'évaluation — toutes les images sont ramenées vers la même
+      distribution de couleur avant même d'entrer dans le réseau. Nécessite `cible_reinhard`
+      (voir `calculer_cible_reinhard`).
+    - `"niveaux_gris"` : conversion en niveaux de gris (3 canaux dupliqués, pour garder
+      l'architecture ResNet inchangée) à l'entraînement ET à l'évaluation — supprime
+      entièrement la couleur, la comparaison la plus radicale.
     """
     import torchvision.transforms as T
 
+    if variante not in VARIANTES_PREPROCESSING:
+        raise ValueError(f"variante inconnue : {variante} (attendu parmi {VARIANTES_PREPROCESSING})")
+
     taille = cfg["donnees"]["taille_entree_modele"]
     moy, std = [0.485, 0.456, 0.406], [0.229, 0.224, 0.225]  # normalisation ImageNet
-    return T.Compose(
-        [
-            T.Resize((taille, taille)),
-            T.RandomHorizontalFlip(),
-            T.RandomVerticalFlip(),
-            T.RandomChoice([T.RandomRotation((a, a)) for a in (0, 90, 180, 270)]),
-            T.ToTensor(),
-            T.Normalize(moy, std),
-        ]
-    )
+
+    pre_train, pre_eval = [], []
+    if variante == "augmentation_couleur":
+        pre_train = [T.ColorJitter(brightness=0.35, contrast=0.35, saturation=0.35, hue=0.08)]
+    elif variante == "normalisation_coloration":
+        if cible_reinhard is None:
+            raise ValueError("cible_reinhard requis pour la variante 'normalisation_coloration'")
+        norm = NormalisationReinhard(*cible_reinhard)
+        pre_train, pre_eval = [norm], [norm]
+    elif variante == "niveaux_gris":
+        gris = T.Grayscale(num_output_channels=3)
+        pre_train, pre_eval = [gris], [gris]
+
+    geo = [
+        T.RandomHorizontalFlip(),
+        T.RandomVerticalFlip(),
+        T.RandomChoice([T.RandomRotation((a, a)) for a in (0, 90, 180, 270)]),
+    ]
+    transform_train = T.Compose([T.Resize((taille, taille)), *pre_train, *geo, T.ToTensor(), T.Normalize(moy, std)])
+    transform_eval = T.Compose([T.Resize((taille, taille)), *pre_eval, T.ToTensor(), T.Normalize(moy, std)])
+    return transform_train, transform_eval
 
 
-def transform_evaluation(cfg: dict[str, Any]):
-    """Même resize et normalisation que l'entraînement, sans augmentation : déterministe."""
-    import torchvision.transforms as T
+def transform_entrainement(cfg: dict[str, Any], variante: str = "base", cible_reinhard=None):
+    """Raccourci : `construire_transforms(cfg, variante, cible_reinhard)[0]`."""
+    return construire_transforms(cfg, variante, cible_reinhard)[0]
 
-    taille = cfg["donnees"]["taille_entree_modele"]
-    moy, std = [0.485, 0.456, 0.406], [0.229, 0.224, 0.225]
-    return T.Compose([T.Resize((taille, taille)), T.ToTensor(), T.Normalize(moy, std)])
+
+def transform_evaluation(cfg: dict[str, Any], variante: str = "base", cible_reinhard=None):
+    """Raccourci : `construire_transforms(cfg, variante, cible_reinhard)[1]`."""
+    return construire_transforms(cfg, variante, cible_reinhard)[1]
 
 
 class PatchDataset(TorchDataset):
