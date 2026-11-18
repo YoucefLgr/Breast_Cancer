@@ -1,0 +1,466 @@
+<title>Détection de métastases</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+  :root{
+    color-scheme: light;
+    --bg: #f1f2f5;
+    --surface: #ffffff;
+    --surface-2: #f7f7fb;
+    --ink: #161b22;
+    --ink-2: #434e5c;
+    --muted: #6b7585;
+    --line: #e1e4ea;
+    --accent: #4a3aa7;
+    --accent-soft: #ece9fb;
+    --accent-soft-line: #d9d3f5;
+    --rose: #a85072;
+    --rose-soft: #f6e8ee;
+    --good: #1f8a5f;
+    --good-soft: #e3f3ec;
+    --pending: #828da0;
+    --shadow: 0 1px 2px rgba(22,27,34,.04), 0 8px 24px rgba(22,27,34,.05);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      color-scheme: dark;
+      --bg: #101219;
+      --surface: #171a24;
+      --surface-2: #1e212c;
+      --ink: #edeff4;
+      --ink-2: #c2c8d6;
+      --muted: #8891a3;
+      --line: #2a2e3b;
+      --accent: #9183e3;
+      --accent-soft: #241f42;
+      --accent-soft-line: #352c5e;
+      --rose: #d793ad;
+      --rose-soft: #32222b;
+      --good: #3ecf93;
+      --good-soft: #163327;
+      --pending: #8891a3;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --bg: #101219;
+    --surface: #171a24;
+    --surface-2: #1e212c;
+    --ink: #edeff4;
+    --ink-2: #c2c8d6;
+    --muted: #8891a3;
+    --line: #2a2e3b;
+    --accent: #9183e3;
+    --accent-soft: #241f42;
+    --accent-soft-line: #352c5e;
+    --rose: #d793ad;
+    --rose-soft: #32222b;
+    --good: #3ecf93;
+    --good-soft: #163327;
+    --pending: #8891a3;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+  }
+
+  *{ box-sizing: border-box; }
+  body{
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap{ max-width: 860px; margin: 0 auto; padding: 0 16px 80px; }
+
+  h1,h2,h3{ font-family: "Source Serif 4", Georgia, serif; font-weight: 600; text-wrap: balance; color: var(--ink); }
+  p{ margin: 0 0 1em; }
+  a{ color: var(--accent); text-decoration-color: var(--accent-soft-line); text-underline-offset: 2px; }
+  a:hover{ text-decoration-thickness: 2px; }
+  code{ font-family: ui-monospace, "SF Mono", Consolas, monospace; font-size: .87em; background: var(--surface-2); border: 1px solid var(--line); border-radius: 4px; padding: .1em .4em; }
+
+  /* ---------- header ---------- */
+  header.hero{
+    padding: 56px 0 28px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 36px;
+  }
+  .eyebrow{
+    font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+  }
+  .eyebrow .dot{ width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+  h1.title{ font-size: clamp(30px, 5vw, 42px); line-height: 1.12; margin: 0 0 10px; }
+  .subtitle{ font-size: 17px; color: var(--ink-2); max-width: 54ch; margin: 0 0 22px; }
+  .meta-row{
+    display: flex; flex-wrap: wrap; gap: 10px 22px; font-size: 13.5px; color: var(--muted);
+  }
+  .meta-row strong{ color: var(--ink-2); font-weight: 600; }
+
+  /* ---------- stat tiles ---------- */
+  .stat-grid{
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 12px;
+    overflow: hidden; margin: 28px 0 8px; box-shadow: var(--shadow);
+  }
+  .stat{ background: var(--surface); padding: 18px 18px 16px; }
+  .stat .label{ font-size: 12.5px; color: var(--muted); margin-bottom: 8px; }
+  .stat .value{ font-family: "Inter", sans-serif; font-weight: 700; font-size: 26px; letter-spacing: -0.01em; }
+  .stat .delta{ font-size: 12.5px; margin-top: 6px; color: var(--good); font-weight: 600; }
+  .stat .delta.neutral{ color: var(--muted); font-weight: 500; }
+
+  /* ---------- phase stepper ---------- */
+  .stepper{
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 8px; margin: 28px 0 8px;
+  }
+  .phase-chip{
+    border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px;
+    background: var(--surface); display: flex; flex-direction: column; gap: 6px;
+  }
+  .phase-chip.done{ border-color: var(--accent-soft-line); background: var(--accent-soft); }
+  .phase-chip.active{ border: 1.5px solid var(--accent); background: var(--surface); }
+  .phase-chip .num{ font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: .04em; }
+  .phase-chip.done .num{ color: var(--accent); }
+  .phase-chip.active .num{ color: var(--accent); }
+  .phase-chip .name{ font-size: 13px; font-weight: 600; color: var(--ink); line-height: 1.25; }
+  .pill{
+    display: inline-flex; align-items: center; gap: 5px; font-size: 10.5px; font-weight: 700;
+    letter-spacing: .03em; text-transform: uppercase; padding: 2px 7px; border-radius: 999px;
+    width: fit-content;
+  }
+  .pill.done{ background: var(--good-soft); color: var(--good); }
+  .pill.active{ background: var(--accent-soft); color: var(--accent); }
+  .pill.pending{ background: var(--surface-2); color: var(--muted); }
+  .pill .dot{ width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+
+  /* ---------- toc ---------- */
+  nav.toc{
+    background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+    padding: 16px 20px; margin: 32px 0; box-shadow: var(--shadow);
+  }
+  nav.toc .toc-label{ font-size: 11.5px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+  nav.toc ol{ columns: 2; column-gap: 28px; list-style: none; margin: 0; padding: 0; counter-reset: toc; }
+  nav.toc li{ break-inside: avoid; counter-increment: toc; margin-bottom: 7px; font-size: 13.5px; }
+  nav.toc li::before{ content: counter(toc, decimal-leading-zero) "  "; color: var(--muted); font-variant-numeric: tabular-nums; }
+  nav.toc a{ color: var(--ink-2); text-decoration: none; }
+  nav.toc a:hover{ color: var(--accent); }
+
+  /* ---------- sections ---------- */
+  section{ margin: 56px 0; scroll-margin-top: 20px; }
+  .section-head{ display: flex; align-items: baseline; gap: 12px; margin-bottom: 18px; }
+  .section-no{
+    font-family: "Source Serif 4", serif; font-size: 15px; font-weight: 600; color: var(--accent);
+    background: var(--accent-soft); border-radius: 7px; padding: 3px 9px; flex-shrink: 0;
+  }
+  h2{ font-size: 23px; margin: 0; }
+  h3{ font-size: 17.5px; margin: 26px 0 10px; }
+  .phase-tag{ font-size: 11.5px; font-weight: 600; color: var(--muted); margin-left: auto; white-space: nowrap; }
+
+  /* ---------- code references ---------- */
+  .code-refs{ display: flex; flex-wrap: wrap; align-items: center; gap: 7px; margin: 0 0 20px; }
+  .code-refs .label{
+    font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em;
+    color: var(--muted); margin-right: 2px;
+  }
+  .code-chip{
+    font-family: ui-monospace, "SF Mono", Consolas, monospace; font-size: 12px;
+    color: var(--ink-2); background: var(--surface-2); border: 1px solid var(--line);
+    border-radius: 7px; padding: 4px 10px; text-decoration: none; line-height: 1.5;
+  }
+  .code-chip:hover{ border-color: var(--accent); color: var(--accent); }
+
+  figure{ margin: 22px 0; }
+  figure img{ width: 100%; border-radius: 10px; border: 1px solid var(--line); display: block; background: var(--surface); }
+  figcaption{ font-size: 12.5px; color: var(--muted); margin-top: 8px; line-height: 1.5; }
+
+  .callout{
+    border-left: 3px solid var(--accent); background: var(--accent-soft);
+    border-radius: 0 10px 10px 0; padding: 14px 18px; margin: 18px 0; font-size: 14.5px;
+  }
+  .callout.rose{ border-left-color: var(--rose); background: var(--rose-soft); }
+  .callout strong{ color: var(--ink); }
+
+  ul, ol{ padding-left: 1.3em; margin: 0 0 1em; }
+  li{ margin-bottom: 6px; }
+  li::marker{ color: var(--muted); }
+
+  table{ width: 100%; border-collapse: collapse; font-size: 13.5px; margin: 18px 0; }
+  .table-wrap{ overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; }
+  .table-wrap table{ margin: 0; }
+  th, td{ padding: 9px 13px; text-align: left; border-bottom: 1px solid var(--line); }
+  th{ background: var(--surface-2); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .03em; color: var(--muted); }
+  td{ font-variant-numeric: tabular-nums; }
+  tr:last-child td{ border-bottom: none; }
+  tr.highlight td{ background: var(--accent-soft); font-weight: 600; }
+  td.num, th.num{ text-align: right; }
+
+  .two-col{ display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  @media (max-width: 620px){ .two-col{ grid-template-columns: 1fr; } nav.toc ol{ columns: 1; } }
+
+  .code-path{ font-size: 12.5px; color: var(--muted); }
+
+  footer{
+    border-top: 1px solid var(--line); margin-top: 64px; padding-top: 24px;
+    font-size: 12.5px; color: var(--muted); display: flex; flex-direction: column; gap: 6px;
+  }
+  footer a{ color: var(--ink-2); }
+
+  @media (max-width: 480px){
+    header.hero{ padding-top: 36px; }
+    .stat-grid{ grid-template-columns: 1fr 1fr; }
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="eyebrow"><span class="dot"></span>MBA 2 — Data &amp; BI · Epitech · 2026-2027</div>
+    <h1 class="title">Détection automatique de métastases du cancer du sein</h1>
+    <p class="subtitle">Rapport d'avancement — Projet SPÉ 1, à partir du jeu CAMELYON17-WILDS. Phases 0 à 4 terminées, Phase 5 en cours d'exécution.</p>
+    <div class="meta-row">
+      <span><strong>Auteur</strong> Youcef Lagraa</span>
+      <span><strong>Mis à jour le</strong> 18 novembre 2026</span>
+      <span><strong>Dépôt</strong> <a href="https://github.com/YoucefLgr/Breast_Cancer" target="_blank" rel="noopener">github.com/YoucefLgr/Breast_Cancer</a></span>
+      <span><strong>Soutenance</strong> 27 novembre 2026</span>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="label">ROC-AUC, hôpital 1 (CNN)</div>
+        <div class="value">0,973</div>
+        <div class="delta">+0,075 vs référence simple</div>
+      </div>
+      <div class="stat">
+        <div class="label">Rappel après seuil ajusté</div>
+        <div class="value">95,2 %</div>
+        <div class="delta">vs 93,9 % au seuil par défaut</div>
+      </div>
+      <div class="stat">
+        <div class="label">Patchs analysés</div>
+        <div class="value">455 954</div>
+        <div class="delta neutral">+ sous-échantillon de 39 000</div>
+      </div>
+      <div class="stat">
+        <div class="label">Hôpital 2 (test)</div>
+        <div class="value">0 fois</div>
+        <div class="delta neutral">réservé à la Phase 6</div>
+      </div>
+    </div>
+
+    <div class="stepper">
+      <div class="phase-chip done"><span class="num">PHASE 0</span><span class="name">Mise en place</span><span class="pill done"><span class="dot"></span>terminé</span></div>
+      <div class="phase-chip done"><span class="num">PHASE 1</span><span class="name">Contexte clinique</span><span class="pill done"><span class="dot"></span>terminé</span></div>
+      <div class="phase-chip done"><span class="num">PHASE 2</span><span class="name">Exploration des données</span><span class="pill done"><span class="dot"></span>terminé</span></div>
+      <div class="phase-chip done"><span class="num">PHASE 3</span><span class="name">Référence simple</span><span class="pill done"><span class="dot"></span>terminé</span></div>
+      <div class="phase-chip done"><span class="num">PHASE 4</span><span class="name">CNN par transfert</span><span class="pill done"><span class="dot"></span>terminé</span></div>
+      <div class="phase-chip active"><span class="num">PHASE 5</span><span class="name">Robustesse domain shift</span><span class="pill active"><span class="dot"></span>en cours</span></div>
+      <div class="phase-chip"><span class="num">PHASE 6</span><span class="name">Test hôpital 2</span><span class="pill pending"><span class="dot"></span>à venir</span></div>
+      <div class="phase-chip"><span class="num">PHASE 7</span><span class="name">Patch → patiente</span><span class="pill pending"><span class="dot"></span>à venir</span></div>
+      <div class="phase-chip"><span class="num">PHASE 8</span><span class="name">Interprétabilité</span><span class="pill pending"><span class="dot"></span>à venir</span></div>
+      <div class="phase-chip"><span class="num">PHASE 9</span><span class="name">Rapport final</span><span class="pill pending"><span class="dot"></span>à venir</span></div>
+    </div>
+  </header>
+
+  <nav class="toc" aria-label="Sommaire">
+    <div class="toc-label">Sommaire</div>
+    <ol>
+      <li><a href="#contexte">Contexte et objectifs</a></li>
+      <li><a href="#methode">Méthodologie et règles absolues</a></li>
+      <li><a href="#donnees">Exploration des données</a></li>
+      <li><a href="#reference">Référence simple</a></li>
+      <li><a href="#cnn">CNN par transfert d'apprentissage</a></li>
+      <li><a href="#robustesse">Robustesse au domain shift</a></li>
+      <li><a href="#limites">Limites et points de vigilance</a></li>
+      <li><a href="#suite">Prochaines étapes</a></li>
+    </ol>
+  </nav>
+
+  <section id="contexte">
+    <div class="section-head"><span class="section-no">01</span><h2>Contexte et objectifs</h2><span class="phase-tag">Phase 1 — terminée</span></div>
+    <div class="code-refs">
+      <span class="label">À vérifier</span>
+      <a class="code-chip" href="https://github.com/YoucefLgr/Breast_Cancer/blob/main/Sujet_SPE1_histopathologie.md" target="_blank" rel="noopener">Sujet_SPE1_histopathologie.md</a>
+      <a class="code-chip" href="https://github.com/YoucefLgr/Breast_Cancer/blob/main/outputs/rapport/01_contexte.md" target="_blank" rel="noopener">outputs/rapport/01_contexte.md</a>
+    </div>
+    <p>Le projet s'appuie sur <strong>CAMELYON17-WILDS</strong> : des lames histologiques de ganglions lymphatiques, colorées à l'hématoxyline-éosine (H&amp;E), provenant de <strong>5 hôpitaux néerlandais</strong>. L'objectif est double : détecter les métastases au niveau du patch (96×96 px), puis remonter du patch à la lame et à la patiente pour estimer un stade clinique — tout en mesurant honnêtement la robustesse du système face au changement d'hôpital (<em>domain shift</em>).</p>
+    <p>Trois contraintes cliniques structurent toutes les décisions techniques du projet :</p>
+    <ul>
+      <li><strong>Coût asymétrique des erreurs.</strong> Un faux négatif (métastase manquée) risque un sous-staging de la patiente — plus grave qu'un faux positif, qui coûte une relecture. Le pilotage se fait donc par le <strong>rappel</strong>, pas par l'exactitude brute.</li>
+      <li><strong>Variabilité inter-hôpitaux.</strong> Chaque hôpital a son scanner et son protocole de coloration propres : un modèle performant sur ses hôpitaux d'entraînement peut échouer ailleurs. C'est le fil rouge du projet.</li>
+      <li><strong>Jeu équilibré, réalité clinique déséquilibrée.</strong> Les patchs disponibles sont à 50&nbsp;% de prévalence tumorale ; en clinique, l'immense majorité du tissu est saine. Les métriques de précision mesurées ici ne se transposent pas telles quelles.</li>
+    </ul>
+  </section>
+
+  <section id="methode">
+    <div class="section-head"><span class="section-no">02</span><h2>Méthodologie et règles absolues</h2><span class="phase-tag">Phase 0 — terminée</span></div>
+    <div class="code-refs">
+      <span class="label">À vérifier</span>
+      <a class="code-chip" href="https://github.com/YoucefLgr/Breast_Cancer/blob/main/config.yaml" target="_blank" rel="noopener">config.yaml</a>
+      <a class="code-chip" href="https://github.com/YoucefLgr/Breast_Cancer/blob/main/src/utils.py" target="_blank" rel="noopener">src/utils.py</a>
+      <a class="code-chip" href="https://github.com/YoucefLgr/Breast_Cancer/blob/main/PLAN.md" target="_blank" rel="noopener">PLAN.md</a>
+    </div>
+    <p>Trois règles, non négociables, appliquées à chaque phase :</p>
+    <div class="two-col">
+      <div class="callout">
+        <strong>Split officiel, par hôpital.</strong> Entraînement sur les hôpitaux 0/3/4, tous les réglages sur l'hôpital 1 (<code>val_ood</code>), jamais de split aléatoire de patchs. Un garde-fou (<code>verifier_absence_fuite</code>) vérifie par assertion qu'aucune lame ni patiente n'est partagée entre deux ensembles.
+      </div>
+      <div class="callout rose">
+        <strong>L'hôpital 2 n'a servi 0 fois.</strong> Réservé exclusivement au test final, une seule fois, en Phase 6 — avec un modèle et un seuil déjà figés sur l'hôpital 1.
+      </div>
+    </div>
+    <p>Reproductibilité : seeds fixées partout (<code>random</code>, <code>numpy</code>, <code>torch</code>), configuration centralisée dans <code>config.yaml</code>, et <strong>toute métrique citée vient d'un fichier <code>outputs/metrics/*.json</code></strong> généré par l'exécution réelle d'un notebook — aucun chiffre de ce document n'est estimé ou arrondi à la main.</p>
+  </section>
+
+  <section id="donnees">
+    <div class="section-head"><span class="section-no">03</span><h2>Exploration des données</h2><span class="phase-tag">Phase 2 — terminée</span></div>
+    <div class="code-refs">
+      <span class="label">À vérifier</span>
+      <a class="code-chip" href="https://github.com/YoucefLgr/Breast_Cancer/blob/main/notebooks/01_eda.ipynb" target="_blank" rel="noopener">notebooks/01_eda.ipynb</a>
+      <a class="code-chip" href="https://github.com/YoucefLgr/Breast_Cancer/blob/main/src/data.py" target="_blank" rel="noopener">src/data.py</a>
+      <a class="code-chip" href="https://github.com/YoucefLgr/Breast_Cancer/blob/main/outputs/metrics/02_donnees.json" target="_blank" rel="noopener">outputs/metrics/02_donnees.json</a>
+    </div>
+    <p>Le pack fourni ne contient aucune image — seulement des métadonnées. Les 39 000 patchs du sous-échantillon ont été reconstruits depuis le miroir Hugging Face du jeu WILDS.</p>
+
+    <h3>Un shift de couleur net, mesuré et pas seulement visuel</h3>
+    <p>Sur 300 patchs par hôpital, la saturation HSV moyenne va de <strong>0,206</strong> (hôpital 4) à <strong>0,379</strong> (hôpital 2) — un facteur 1,8 — et le canal bleu moyen de 0,591 à 0,818.</p>
+    <figure>
+      <img src="figures/grille-exemples.png" alt="Grille de patchs représentatifs pour chacun des 5 hôpitaux, tissu normal puis tumoral">
+      <figcaption>4 patchs normaux puis 4 patchs tumoraux pour chacun des 5 hôpitaux — la teinte diffère nettement d'un hôpital à l'autre, indépendamment de la présence de tumeur.</figcaption>
+    </figure>
+    <figure>
+      <img src="figures/histogrammes-couleur.png" alt="Histogrammes des canaux RGB et HSV par hôpital">
+      <figcaption>Distributions RGB/HSV par hôpital (300 patchs chacun) : des distributions qui se chevauchent mais restent nettement décalées, en particulier sur la saturation.</figcaption>
+    </figure>
+
+    <h3>Le décalage ne se limite pas à la teinte</h3>
+    <p>La netteté (variance du Laplacien) a une médiane de 868,7 à l'hôpital 3 contre 3 114,9 à l'hôpital 4 (×3,6). La part de fond blanc médiane va de 1,0 % à 15,3 % selon l'hôpital — un modèle naïf dispose donc de plusieurs indices non cellulaires pour deviner l'hôpital d'origine.</p>
+
+    <h3>Un jeu « équilibré » qui ne l'est que par construction</h3>
+    <p>Même les 455 954 patchs « complets » restent proches de 50/50 (151 046 non tumoraux pour 151 390 tumoraux sur <code>train</code>) : Camelyon17-WILDS n'échantillonne que les 50 lames annotées, toutes positives — ni ce jeu ni le sous-échantillon ne reflètent la prévalence clinique réelle. Par ailleurs le nombre de patchs par lame varie de 888 à 61 110 (×69), et la part tumorale d'une lame positive de 0,1 % (cellules isolées) à 93 % (macro-métastases).</p>
+  </section>
+
+  <section id="reference">
+    <div class="section-head"><span class="section-no">04</span><h2>Référence simple</h2><span class="phase-tag">Phase 3 — terminée</span></div>
+    <div class="code-refs">
+      <span class="label">À vérifier</span>
+      <a class="code-chip" href="https://github.com/YoucefLgr/Breast_Cancer/blob/main/notebooks/02_baseline.ipynb" target="_blank" rel="noopener">notebooks/02_baseline.ipynb</a>
+      <a class="code-chip" href="https://github.com/YoucefLgr/Breast_Cancer/blob/main/src/features.py" target="_blank" rel="noopener">src/features.py</a>
+      <a class="code-chip" href="https://github.com/YoucefLgr/Breast_Cancer/blob/main/outputs/metrics/03_reference_simple.json" target="_blank" rel="noopener">outputs/metrics/03_reference_simple.json</a>
+    </div>
+    <p>124 variables par patch (histogrammes RGB et HSV, texture par <em>local binary patterns</em>) → régression logistique et forêt aléatoire, réglées exclusivement sur l'hôpital 1.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Variante</th><th>Modèle</th><th class="num">AUC id_val</th><th class="num">AUC val_ood (H1)</th></tr></thead>
+        <tbody>
+          <tr><td>Couleur</td><td>Régression logistique</td><td class="num">0,980</td><td class="num">0,816</td></tr>
+          <tr><td>Couleur</td><td>Forêt aléatoire</td><td class="num">0,992</td><td class="num">0,883</td></tr>
+          <tr><td>Texture</td><td>Régression logistique</td><td class="num">0,933</td><td class="num">0,888</td></tr>
+          <tr><td>Texture</td><td>Forêt aléatoire</td><td class="num">0,962</td><td class="num">0,854</td></tr>
+          <tr><td>Couleur + texture</td><td>Régression logistique</td><td class="num">0,986</td><td class="num">0,858</td></tr>
+          <tr class="highlight"><td>Couleur + texture</td><td>Forêt aléatoire</td><td class="num">0,993</td><td class="num">0,898</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <figure>
+      <img src="figures/importances-reference.png" alt="Importance des variables par famille et top 15 variables de la forêt aléatoire">
+      <figcaption>Importance cumulée par famille et 15 variables les plus influentes (forêt aléatoire, couleur + texture).</figcaption>
+    </figure>
+
+    <div class="callout">
+      <strong>Constat central :</strong> le meilleur modèle tire 83 % de son importance des histogrammes de couleur (43 % RGB + 40 % HSV) contre 17 % pour la texture — et pourtant, hors distribution, le modèle <em>texture seule</em> (0,888) dépasse le modèle <em>couleur seule</em> (0,816). Exactement le piège signalé par l'énoncé : « apprendre la couleur plutôt que les cellules ». Cette référence (0,898 AUC) sert de repère pour juger le CNN.
+    </div>
+  </section>
+
+  <section id="cnn">
+    <div class="section-head"><span class="section-no">05</span><h2>CNN par transfert d'apprentissage</h2><span class="phase-tag">Phase 4 — terminée</span></div>
+    <div class="code-refs">
+      <span class="label">À vérifier</span>
+      <a class="code-chip" href="https://github.com/YoucefLgr/Breast_Cancer/blob/main/notebooks/03_cnn.ipynb" target="_blank" rel="noopener">notebooks/03_cnn.ipynb</a>
+      <a class="code-chip" href="https://github.com/YoucefLgr/Breast_Cancer/blob/main/src/model.py" target="_blank" rel="noopener">src/model.py</a>
+      <a class="code-chip" href="https://github.com/YoucefLgr/Breast_Cancer/blob/main/src/train.py" target="_blank" rel="noopener">src/train.py</a>
+      <a class="code-chip" href="https://github.com/YoucefLgr/Breast_Cancer/blob/main/outputs/metrics/04_cnn.json" target="_blank" rel="noopener">outputs/metrics/04_cnn.json</a>
+    </div>
+    <p>ResNet18 pré-entraîné ImageNet, entraîné sur Colab (GPU T4) en deux temps : <strong>phase A</strong> (tête seule, 6 époques) puis <strong>phase B</strong> (<code>layer3</code>/<code>layer4</code> dégelés, arrêt anticipé après 5 époques sur 8 prévues).</p>
+
+    <figure>
+      <img src="figures/courbes-cnn.png" alt="Courbes de perte d'entraînement et de ROC-AUC sur val_ood pour les phases A et B">
+      <figcaption>Perte d'entraînement et ROC-AUC sur l'hôpital 1, phases A et B. Le saut survient dès le dégel de <code>layer3</code>/<code>layer4</code>.</figcaption>
+    </figure>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Modèle</th><th class="num">ROC-AUC, hôpital 1</th></tr></thead>
+        <tbody>
+          <tr><td>Référence simple (Phase 3)</td><td class="num">0,898</td></tr>
+          <tr class="highlight"><td>CNN ResNet18 (phase B)</td><td class="num">0,973</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>+0,075 point d'AUC</strong> au-dessus de la référence — un gain net, pas marginal : le CNN dépasse largement même le modèle couleur seule de la Phase 3 (0,883).</p>
+
+    <h3>Choix du seuil de décision (coût des faux négatifs)</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Seuil</th><th class="num">Rappel</th><th class="num">Précision</th><th class="num">Faux négatifs</th><th class="num">Faux positifs</th></tr></thead>
+        <tbody>
+          <tr><td>0,5 (défaut)</td><td class="num">93,9 %</td><td class="num">87,9 %</td><td class="num">123</td><td class="num">258</td></tr>
+          <tr class="highlight"><td>0,31 (ajusté, cible ≥ 95 %)</td><td class="num">95,2 %</td><td class="num">84,9 %</td><td class="num">97</td><td class="num">339</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Sur 4 000 patchs de l'hôpital 1 : <strong>26 métastases manquées en moins</strong> (123 → 97) pour 81 faux positifs supplémentaires. Un compromis cohérent avec le coût clinique — mais 95,2 % de rappel laisse encore près d'une centaine de métastases non détectées : loin d'un système déployable sans supervision.</p>
+  </section>
+
+  <section id="robustesse">
+    <div class="section-head"><span class="section-no">06</span><h2>Robustesse au domain shift</h2><span class="phase-tag">Phase 5 — en cours d'exécution</span></div>
+    <div class="code-refs">
+      <span class="label">À vérifier</span>
+      <a class="code-chip" href="https://github.com/YoucefLgr/Breast_Cancer/blob/main/notebooks/04_robustesse.ipynb" target="_blank" rel="noopener">notebooks/04_robustesse.ipynb</a>
+      <a class="code-chip" href="https://github.com/YoucefLgr/Breast_Cancer/blob/main/src/data.py" target="_blank" rel="noopener">src/data.py</a>
+      <a class="code-chip" href="https://github.com/YoucefLgr/Breast_Cancer/blob/main/src/train.py" target="_blank" rel="noopener">src/train.py</a>
+    </div>
+    <p>Trois variantes, entraînées avec exactement le même protocole que la Phase 4, pour vérifier si l'écart entre hôpitaux peut être réduit :</p>
+    <ul>
+      <li><strong>Augmentation de couleur</strong> (<code>ColorJitter</code>, à l'entraînement seulement) — le modèle ne peut plus se fier à une teinte fixe.</li>
+      <li><strong>Normalisation de coloration</strong> (Reinhard, train + évaluation) — toutes les images sont ramenées vers une même cible de couleur, calculée sur 200 patchs de l'hôpital 0. Vérifiée visuellement : les 5 hôpitaux deviennent nettement plus homogènes.</li>
+      <li><strong>Niveaux de gris</strong> (train + évaluation) — supprime la couleur entièrement, la comparaison la plus radicale.</li>
+    </ul>
+    <p>Le modèle final sera choisi <strong>sur l'hôpital 1 uniquement</strong>, en comparant non seulement l'AUC absolue mais aussi l'écart entre hôpitaux d'entraînement et hôpital 1 — la vraie mesure de robustesse. Résultats attendus sous peu ; ce document sera mis à jour en conséquence.</p>
+  </section>
+
+  <section id="limites">
+    <div class="section-head"><span class="section-no">07</span><h2>Limites et points de vigilance</h2></div>
+    <ul>
+      <li><strong>Couleur vs morphologie non tranché.</strong> Le gain du CNN sur la référence est encourageant mais ne prouve pas qu'il regarde les cellules plutôt qu'un signal plus subtil lié à l'hôpital — vérification définitive par Grad-CAM en Phase 8.</li>
+      <li><strong>Hôpital 2 toujours non testé.</strong> Toute performance annoncée jusqu'ici concerne l'hôpital 1 ; le vrai test de généralisation reste à faire, une seule fois.</li>
+      <li><strong>Prévalence clinique.</strong> Les métriques de précision mesurées sur un jeu à 50 % de prévalence surestiment la précision réelle attendue en clinique (quelques % de prévalence) — recalcul prévu en Phase 8.</li>
+      <li><strong>Couverture patiente incomplète.</strong> Les 50 lames annotées sont toutes positives et aucune patiente n'a ses 5 ganglions couverts : le stade pN complet ne peut être qu'estimé, pas prédit de bout en bout (Phase 7).</li>
+    </ul>
+  </section>
+
+  <section id="suite">
+    <div class="section-head"><span class="section-no">08</span><h2>Prochaines étapes</h2></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Phase</th><th>Contenu</th><th>Échéance prévue</th></tr></thead>
+        <tbody>
+          <tr><td>6</td><td>Test unique sur l'hôpital 2, avec le modèle et le seuil figés</td><td>20 nov.</td></tr>
+          <tr><td>7</td><td>Cartes de chaleur par lame, classe de lame, règles pN, impact sur le stade patiente</td><td>21–22 nov.</td></tr>
+          <tr><td>8</td><td>Grad-CAM, précision à prévalence clinique réaliste, IA responsable</td><td>23 nov.</td></tr>
+          <tr><td>9</td><td>Rapport final (15 pages max), slides, annexe « Usage de l'IA »</td><td>24–25 nov.</td></tr>
+          <tr><td>—</td><td><strong>Dépôt final</strong></td><td><strong>26 nov., 18h00</strong></td></tr>
+          <tr><td>—</td><td><strong>Soutenance</strong></td><td><strong>27 nov.</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="code-path">Calendrier détaillé : <code>PLAN.md</code> à la racine du dépôt.</p>
+  </section>
+
+  <footer>
+    <span>Code, notebooks et métriques intégralement reproductibles : <a href="https://github.com/YoucefLgr/Breast_Cancer" target="_blank" rel="noopener">github.com/YoucefLgr/Breast_Cancer</a> — voir <code>README.md</code> pour l'exécution sur Colab/Kaggle.</span>
+    <span>Développement assisté par Claude Code (Anthropic) pour l'implémentation du pipeline ; choix méthodologiques, validation des résultats et rédaction du contenu scientifique assurés par l'auteur.</span>
+    <span>Sources : Bándi et al., <em>IEEE Transactions on Medical Imaging</em>, 2019 · Koh et al., <em>WILDS</em>, ICML 2021 · CAMELYON17 (CC0).</span>
+  </footer>
+
+</div>
