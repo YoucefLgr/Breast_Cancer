@@ -1,0 +1,55 @@
+{
+  "horodatage_utc": "2026-11-24T19:45:05.460868+00:00",
+  "variante": "base",
+  "seuil_utilise": 0.32,
+  "exemples": [
+    {
+      "categorie": "vrai_positif",
+      "hopital": 1,
+      "image_id": 41018,
+      "proba": 1.0
+    },
+    {
+      "categorie": "vrai_negatif",
+      "hopital": 1,
+      "image_id": 263604,
+      "proba": 0.003207344328984618
+    },
+    {
+      "categorie": "faux_positif",
+      "hopital": 1,
+      "image_id": 259543,
+      "proba": 0.9472559690475464
+    },
+    {
+      "categorie": "faux_positif",
+      "hopital": 1,
+      "image_id": 265681,
+      "proba": 0.735165536403656
+    },
+    {
+      "categorie": "faux_positif",
+      "hopital": 1,
+      "image_id": 263082,
+      "proba": 0.8877931237220764
+    },
+    {
+      "categorie": "faux_negatif",
+      "hopital": 1,
+      "image_id": 45213,
+      "proba": 0.25781214237213135
+    },
+    {
+      "categorie": "faux_negatif",
+      "hopital": 1,
+      "image_id": 41568,
+      "proba": 0.2132449895143509
+    },
+    {
+      "categorie": "faux_negatif",
+      "hopital": 1,
+      "image_id": 47003,
+      "proba": 0.24845801293849945
+    }
+  ]
+}
