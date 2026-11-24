@@ -45,10 +45,15 @@ def gradcam(modele: torch.nn.Module, x: torch.Tensor, device: str, couche: str =
 
 
 def selectionner_exemples(
-    df, y_pred_classe: np.ndarray, n_par_categorie: int = 2, seed: int = 42
+    df, y_pred_classe: np.ndarray, n_par_categorie: int = 2, seed: int = 42,
+    n_par_categorie_overrides: dict[str, int] | None = None,
 ) -> dict[str, "pd.DataFrame"]:  # noqa: F821 - pandas importé par l'appelant
-    """Sélectionne des vrais positifs / vrais négatifs / faux positifs / faux négatifs,
-    répartis sur plusieurs hôpitaux, pour l'illustration Grad-CAM.
+    """Sélectionne des vrais positifs / vrais négatifs / faux positifs / faux négatifs.
+
+    `n_par_categorie_overrides` permet de demander plus d'exemples pour certaines
+    catégories (ex. `{"faux_negatif": 3, "faux_positif": 3}`, priorité du projet : les
+    erreurs comptent plus que les succès pour l'interprétabilité — voir
+    outputs/rapport/01_contexte.md).
     """
     import pandas as pd  # import local : src/interpret.py ne dépend pas de pandas ailleurs
 
@@ -60,7 +65,9 @@ def selectionner_exemples(
         "faux_positif": d[(d.label == 0) & (d.pred == 1)],
         "faux_negatif": d[(d.label == 1) & (d.pred == 0)],
     }
+    overrides = n_par_categorie_overrides or {}
     return {
-        nom: sous.sample(min(n_par_categorie, len(sous)), random_state=seed) if len(sous) else sous
+        nom: (sous.sample(min(overrides.get(nom, n_par_categorie), len(sous)), random_state=seed)
+              if len(sous) else sous)
         for nom, sous in categories.items()
     }

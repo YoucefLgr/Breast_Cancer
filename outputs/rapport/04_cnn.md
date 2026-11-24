@@ -40,9 +40,11 @@ Entraînement sur `train` (hôpitaux 0/3/4), sélection du meilleur modèle et d
 
 Le seuil ajusté (choisi sur `val_ood` uniquement, jamais recalculé sur l'hôpital 2) fait passer le rappel de 93,9 % à 95,2 % : **26 métastases de moins manquées** sur les 4 000 patchs de l'hôpital 1 (123 → 97 faux négatifs), au prix de 81 faux positifs supplémentaires (258 → 339). Conformément au coût asymétrique des erreurs établi en Phase 1 (un faux négatif est une métastase non détectée, potentiellement un sous-staging de la patiente ; un faux positif coûte une relecture), ce compromis est cohérent avec l'objectif clinique — mais 95,2 % de rappel signifie encore, à cette échelle, plus d'une centaine de métastases manquées sur 4 000 patchs tumoraux : loin d'un système qu'on pourrait déployer sans supervision humaine.
 
-### Repère biaisé (`id_val`, hôpitaux d'entraînement)
+### `id_val` : chiffre non interprétable, affiché par transparence seulement
 
-Sur `id_val` (mêmes lames que `train`), l'AUC ensemble atteint 0,996 (0,994-0,998 par hôpital), nettement au-dessus des 0,973 de `val_ood` — l'écart de 0,023 point illustre, une nouvelle fois, le coût du changement d'hôpital même pour un modèle qui généralise globalement bien. Ce chiffre n'est montré qu'à titre de repère, jamais utilisé pour choisir le modèle ou le seuil.
+Sur `id_val`, l'AUC ensemble atteint 0,996 (0,994-0,998 par hôpital), contre 0,973 sur `val_ood` (hôpital 1). **Cet écart de 0,023 point n'est volontairement interprété d'aucune façon** : `id_val` partage ses lames avec `train` (même patientes, même coloration, mêmes lames — construction officielle de WILDS), donc une partie de son score tient à cette fuite, pas uniquement à une absence de changement d'hôpital. On ne peut pas en déduire un « coût du changement d'hôpital » sans avoir d'abord isolé des patientes entières de `train` jamais vues à l'entraînement, ce que le calendrier du projet n'a pas permis de faire. `id_val` reste affiché uniquement pour la transparence du pipeline, jamais utilisé pour choisir le modèle ou le seuil.
+
+**Important — hôpital 1 n'est pas « jamais vu ».** Contrairement à l'hôpital 2, l'hôpital 1 sert à *tout* régler dans ce projet (hyperparamètres de la référence, sélection du CNN, choix du seuil, et choix de variante en Phase 5). Les performances mesurées sur `val_ood` ne mesurent donc pas une généralisation aveugle : elles mesurent la performance sur l'hôpital qui a servi à tous les réglages. Seul l'hôpital 2 (Phase 6) constitue un test réellement jamais vu.
 
 ## Limites et suite
 

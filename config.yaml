@@ -64,6 +64,13 @@ agregation:
     itc_max: 0.2
     micro_max: 2.0
     # au-delà de micro_max : macro
-  # Résolution µm/pixel au niveau des patchs : À VÉRIFIER dans la doc/papier WILDS avant usage
-  # (le pas de grille observé dans les métadonnées est 32 px, pas 96 — à élucider en phase 7).
-  resolution_um_par_pixel: null
+  # Résolution µm/pixel au niveau des patchs. Source : PatchCamelyon (PCam),
+  # github.com/basveeling/pcam — dont Camelyon17-WILDS reprend la méthode d'extraction :
+  # « acquisition à 40x (résolution native 0,243 µm/pixel), patchs ré-échantillonnés à 10x »,
+  # soit un pixel de patch = 4 x 0,243 = 0,972 µm (un patch de 96 px ~= 93,3 µm de côté).
+  # Limite non résolue : le pas de grille observé entre patchs voisins dans les métadonnées
+  # WILDS est de 32 px, plus fin que la largeur d'un patch (96 px) — signe d'un recouvrement
+  # dans la grille d'extraction officielle, non documenté dans le dépôt `wilds`. La valeur
+  # ci-dessous suppose des patchs jointifs sans recouvrement (hypothèse standard PCam) :
+  # c'est une approximation, signalée comme telle dans outputs/rapport/07_patch_to_patient.md.
+  resolution_um_par_pixel: 0.972

@@ -182,6 +182,36 @@ def evaluer_par_hopital(
     return pd.DataFrame(lignes).round(4)
 
 
+def precision_a_prevalence(rappel: float, specificite: float, prevalence: float) -> float:
+    """Précision (valeur prédictive positive) attendue à une prévalence donnée, à partir
+    du rappel (sensibilité) et de la spécificité mesurés sur `val_ood` (seules mesures
+    disponibles : ni le rappel ni la spécificité ne dépendent de la prévalence du jeu de
+    mesure, donc elles restent valables même si le jeu équilibré à 50 % ne l'est pas).
+
+    Règle de Bayes : VPP = (rappel * prévalence) / (rappel * prévalence + (1 - spécificité) * (1 - prévalence)).
+
+    Sert à recalculer, pour une prévalence clinique réaliste (quelques % au plus, contre
+    50 % dans le sous-échantillon WILDS — voir outputs/rapport/02_donnees.md), la précision
+    à laquelle s'attendre en déploiement réel (Phase 8).
+    """
+    faux_positifs_rate = 1 - specificite
+    numerateur = rappel * prevalence
+    denominateur = numerateur + faux_positifs_rate * (1 - prevalence)
+    return numerateur / denominateur if denominateur > 0 else float("nan")
+
+
+def tableau_precision_a_prevalence(rappel: float, specificite: float, prevalences=(0.5, 0.05, 0.01)) -> pd.DataFrame:
+    """Tableau précision/VPP pour plusieurs prévalences, dont 0,5 (le jeu WILDS lui-même,
+    pour comparaison) et les prévalences cliniques demandées (5 % et 1 %)."""
+    import pandas as pd
+
+    lignes = [
+        {"prevalence": p, "precision_attendue": round(precision_a_prevalence(rappel, specificite, p), 4)}
+        for p in prevalences
+    ]
+    return pd.DataFrame(lignes)
+
+
 def save_metrics(metrics: dict[str, Any], path: str | Path, overwrite: bool = True) -> Path:
     """Sauvegarde un dict de métriques en JSON, avec un horodatage. C'est la SEULE source
     de chiffres autorisée dans le rapport (voir PLAN.md : "Aucun chiffre inventé").
