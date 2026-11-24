@@ -215,7 +215,7 @@
   <header class="hero">
     <div class="eyebrow"><span class="dot"></span>MBA 2 — Data &amp; BI · Epitech · 2026-2027</div>
     <h1 class="title">Détection automatique de métastases du cancer du sein</h1>
-    <p class="subtitle">Rapport d'avancement — Projet SPÉ 1, à partir du jeu CAMELYON17-WILDS. Phases 0 à 4 terminées, Phase 5 en cours d'exécution.</p>
+    <p class="subtitle">Rapport d'avancement — Projet SPÉ 1, à partir du jeu CAMELYON17-WILDS. Phases 0 à 5 et 7 terminées ; Phases 6 et 8 en cours sur Colab.</p>
     <div class="meta-row">
       <span><strong>Auteur</strong> Youcef Lagraa</span>
       <span><strong>Mis à jour le</strong> 18 novembre 2026</span>
@@ -252,10 +252,10 @@
       <div class="phase-chip done"><span class="num">PHASE 2</span><span class="name">Exploration des données</span><span class="pill done"><span class="dot"></span>terminé</span></div>
       <div class="phase-chip done"><span class="num">PHASE 3</span><span class="name">Référence simple</span><span class="pill done"><span class="dot"></span>terminé</span></div>
       <div class="phase-chip done"><span class="num">PHASE 4</span><span class="name">CNN par transfert</span><span class="pill done"><span class="dot"></span>terminé</span></div>
-      <div class="phase-chip active"><span class="num">PHASE 5</span><span class="name">Robustesse domain shift</span><span class="pill active"><span class="dot"></span>en cours</span></div>
-      <div class="phase-chip"><span class="num">PHASE 6</span><span class="name">Test hôpital 2</span><span class="pill pending"><span class="dot"></span>à venir</span></div>
-      <div class="phase-chip"><span class="num">PHASE 7</span><span class="name">Patch → patiente</span><span class="pill pending"><span class="dot"></span>à venir</span></div>
-      <div class="phase-chip"><span class="num">PHASE 8</span><span class="name">Interprétabilité</span><span class="pill pending"><span class="dot"></span>à venir</span></div>
+      <div class="phase-chip done"><span class="num">PHASE 5</span><span class="name">Robustesse domain shift</span><span class="pill done"><span class="dot"></span>terminé</span></div>
+      <div class="phase-chip active"><span class="num">PHASE 6</span><span class="name">Test hôpital 2</span><span class="pill active"><span class="dot"></span>en cours</span></div>
+      <div class="phase-chip done"><span class="num">PHASE 7</span><span class="name">Patch → patiente</span><span class="pill done"><span class="dot"></span>terminé</span></div>
+      <div class="phase-chip active"><span class="num">PHASE 8</span><span class="name">Interprétabilité</span><span class="pill active"><span class="dot"></span>en cours</span></div>
       <div class="phase-chip"><span class="num">PHASE 9</span><span class="name">Rapport final</span><span class="pill pending"><span class="dot"></span>à venir</span></div>
     </div>
   </header>
@@ -269,6 +269,7 @@
       <li><a href="#reference">Référence simple</a></li>
       <li><a href="#cnn">CNN par transfert d'apprentissage</a></li>
       <li><a href="#robustesse">Robustesse au domain shift</a></li>
+      <li><a href="#patch-patiente">Du patch à la patiente</a></li>
       <li><a href="#limites">Limites et points de vigilance</a></li>
       <li><a href="#suite">Prochaines étapes</a></li>
     </ol>
@@ -413,24 +414,68 @@
   </section>
 
   <section id="robustesse">
-    <div class="section-head"><span class="section-no">06</span><h2>Robustesse au domain shift</h2><span class="phase-tag">Phase 5 — en cours d'exécution</span></div>
+    <div class="section-head"><span class="section-no">06</span><h2>Robustesse au domain shift</h2><span class="phase-tag">Phase 5 — terminée</span></div>
     <div class="code-refs">
       <span class="label">À vérifier</span>
       <a class="code-chip" href="https://github.com/YoucefLgr/Breast_Cancer/blob/main/notebooks/04_robustesse.ipynb" target="_blank" rel="noopener">notebooks/04_robustesse.ipynb</a>
       <a class="code-chip" href="https://github.com/YoucefLgr/Breast_Cancer/blob/main/src/data.py" target="_blank" rel="noopener">src/data.py</a>
-      <a class="code-chip" href="https://github.com/YoucefLgr/Breast_Cancer/blob/main/src/train.py" target="_blank" rel="noopener">src/train.py</a>
+      <a class="code-chip" href="https://github.com/YoucefLgr/Breast_Cancer/blob/main/outputs/rapport/05_robustesse.md" target="_blank" rel="noopener">outputs/rapport/05_robustesse.md</a>
     </div>
-    <p>Trois variantes, entraînées avec exactement le même protocole que la Phase 4, pour vérifier si l'écart entre hôpitaux peut être réduit :</p>
+    <p><strong>Rappel : l'hôpital 1 n'est pas « jamais vu ».</strong> Il sert à régler la référence, sélectionner le CNN et son seuil, et comparer les variantes ci-dessous — seul l'hôpital 2 (Phase 6) est un test réellement jamais vu.</p>
+    <p>Trois variantes, entraînées avec exactement le même protocole que la Phase 4 :</p>
     <ul>
-      <li><strong>Augmentation de couleur</strong> (<code>ColorJitter</code>, à l'entraînement seulement) — le modèle ne peut plus se fier à une teinte fixe.</li>
-      <li><strong>Normalisation de coloration</strong> (Reinhard, train + évaluation) — toutes les images sont ramenées vers une même cible de couleur, calculée sur 200 patchs de l'hôpital 0. Vérifiée visuellement : les 5 hôpitaux deviennent nettement plus homogènes.</li>
-      <li><strong>Niveaux de gris</strong> (train + évaluation) — supprime la couleur entièrement, la comparaison la plus radicale.</li>
+      <li><strong>Augmentation de couleur</strong> (<code>ColorJitter</code>, à l'entraînement seulement) — AUC 0,9767 sur H1.</li>
+      <li><strong>Normalisation de coloration</strong> (Reinhard, train + évaluation) — AUC 0,9750. Vérifiée visuellement : les 5 hôpitaux deviennent nettement plus homogènes.</li>
+      <li><strong>Niveaux de gris</strong> (train + évaluation) — AUC 0,9644, la plus basse des quatre.</li>
+      <li><strong>Baseline (Phase 4, aucune technique)</strong> — AUC 0,9734, pour comparaison.</li>
     </ul>
-    <p>Le modèle final sera choisi <strong>sur l'hôpital 1 uniquement</strong>, en comparant non seulement l'AUC absolue mais aussi l'écart entre hôpitaux d'entraînement et hôpital 1 — la vraie mesure de robustesse. Résultats attendus sous peu ; ce document sera mis à jour en conséquence.</p>
+    <div class="callout">
+      <strong>Une égalité, pas un classement.</strong> L'écart entre les trois premières variantes (0,002 à 0,004 point d'AUC) n'est pas interprétable sur une seule graine, avec des durées d'entraînement inégales (arrêt anticipé à des époques différentes selon la variante) et un seuil de décision non recalculé pour chacune — au seuil 0,5, l'augmentation de couleur rate d'ailleurs <em>plus</em> de métastases que la baseline (158 contre 123 faux négatifs sur 4 000 patchs de H1), malgré une AUC plus haute. <strong>La baseline est retenue pour la Phase 6</strong> : un choix par défaut qui ne prétend à aucune amélioration non prouvée, avec un seuil déjà proprement établi en Phase 4. Seules les niveaux de gris se distinguent clairement — dans le mauvais sens.
+    </div>
+  </section>
+
+  <section id="patch-patiente">
+    <div class="section-head"><span class="section-no">07</span><h2>Du patch à la patiente</h2><span class="phase-tag">Phase 7 — terminée (version allégée)</span></div>
+    <div class="code-refs">
+      <span class="label">À vérifier</span>
+      <a class="code-chip" href="https://github.com/YoucefLgr/Breast_Cancer/blob/main/notebooks/05_patch_to_patient.ipynb" target="_blank" rel="noopener">notebooks/05_patch_to_patient.ipynb</a>
+      <a class="code-chip" href="https://github.com/YoucefLgr/Breast_Cancer/blob/main/src/aggregation.py" target="_blank" rel="noopener">src/aggregation.py</a>
+      <a class="code-chip" href="https://github.com/YoucefLgr/Breast_Cancer/blob/main/src/staging.py" target="_blank" rel="noopener">src/staging.py</a>
+      <a class="code-chip" href="https://github.com/YoucefLgr/Breast_Cancer/blob/main/outputs/rapport/07_patch_to_patient.md" target="_blank" rel="noopener">outputs/rapport/07_patch_to_patient.md</a>
+    </div>
+    <p>C'était la priorité numéro un du sujet. Portée réduite, assumée par manque de temps : 40 des 50 lames annotées (hôpitaux 0, 1, 3, 4 — l'hôpital 2 n'est pas touché avant la Phase 6). Modèle source : la référence simple de la Phase 3 (CPU, pas de GPU nécessaire pour cette phase).</p>
+
+    <h3>Taille de la plus grande zone tumorale, en mm</h3>
+    <p><strong>Résolution physique sourcée</strong> : 0,972 µm/pixel (PatchCamelyon, <code>github.com/basveeling/pcam</code> — acquisition 40x native à 0,243 µm/pixel, patchs ré-échantillonnés à 10x), soit un patch de 93,3 µm de côté. Pour chaque lame, composantes connexes des patchs prédits positifs → taille de la plus grande zone → classe (itc ≤ 0,2 mm, micro ≤ 2 mm, macro &gt; 2 mm).</p>
+
+    <h3>Règles pN : vérifiées formellement</h3>
+    <p>Concordance <strong>100 %</strong> entre les règles codées et le stade officiel des 100 patientes, à partir des classes officielles des lames (assert dans <code>src/staging.py</code>).</p>
+
+    <h3>Classe de lame prédite : 27,5 % d'exactitude, et pourquoi</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Officiel \ Prédit</th><th class="num">itc</th><th class="num">micro</th><th class="num">negative</th></tr></thead>
+        <tbody>
+          <tr><td>itc</td><td class="num">10</td><td class="num">0</td><td class="num">4</td></tr>
+          <tr><td>micro</td><td class="num">12</td><td class="num">1</td><td class="num">0</td></tr>
+          <tr><td>macro</td><td class="num">4</td><td class="num">9</td><td class="num">0</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <figure>
+      <img src="figures/cartes-lames.png" alt="Cartes de trois lames : vérité terrain et probabilité prédite">
+      <figcaption>Trois lames (itc, micro, macro) : vérité terrain (cerclé de noir) et probabilité prédite par patch. Les amas de vérité denses contiennent encore beaucoup de patchs prédits à faible probabilité.</figcaption>
+    </figure>
+    <div class="callout rose">
+      <strong>Aucune lame macro n'est jamais prédite macro.</strong> Biais systématique vers le sous-staging, qui se cumule de deux causes : couverture partielle du sous-échantillon par lame (quelques centaines à quelques milliers de patchs sur des dizaines de milliers au total), et rappel imparfait du modèle de référence à l'intérieur même des zones tumorales. La méthode d'agrégation elle-même (composantes connexes, seuils mm, règles pN) est vérifiée et fonctionne — la limite dominante est la densité de patchs disponibles et la performance du modèle source, pas la logique d'agrégation.
+    </div>
+
+    <h3>Impact sur le stade pN</h3>
+    <p>En remplaçant la classe officielle par la classe prédite sur les lames annotées : <strong>18 stades modifiés sur 34 patientes touchées</strong> — et les 18 vont dans le même sens, <strong>le sous-staging</strong> (0 sur-staging). C'est l'erreur la plus grave cliniquement : sous-estimer systématiquement l'étendue tumorale fait mécaniquement sous-estimer le stade.</p>
   </section>
 
   <section id="limites">
-    <div class="section-head"><span class="section-no">07</span><h2>Limites et points de vigilance</h2></div>
+    <div class="section-head"><span class="section-no">08</span><h2>Limites et points de vigilance</h2></div>
     <ul>
       <li><strong>Couleur vs morphologie non tranché.</strong> Le gain du CNN sur la référence est encourageant mais ne prouve pas qu'il regarde les cellules plutôt qu'un signal plus subtil lié à l'hôpital — vérification définitive par Grad-CAM en Phase 8.</li>
       <li><strong>Hôpital 2 toujours non testé.</strong> Toute performance annoncée jusqu'ici concerne l'hôpital 1 ; le vrai test de généralisation reste à faire, une seule fois.</li>
@@ -440,7 +485,7 @@
   </section>
 
   <section id="suite">
-    <div class="section-head"><span class="section-no">08</span><h2>Prochaines étapes</h2></div>
+    <div class="section-head"><span class="section-no">09</span><h2>Prochaines étapes</h2></div>
     <div class="table-wrap">
       <table>
         <thead><tr><th>Phase</th><th>Contenu</th><th>Échéance prévue</th></tr></thead>
