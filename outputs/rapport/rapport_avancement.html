@@ -215,7 +215,7 @@
   <header class="hero">
     <div class="eyebrow"><span class="dot"></span>MBA 2 — Data &amp; BI · Epitech · 2026-2027</div>
     <h1 class="title">Détection automatique de métastases du cancer du sein</h1>
-    <p class="subtitle">Rapport d'avancement — Projet SPÉ 1, à partir du jeu CAMELYON17-WILDS. Phases 0 à 7 terminées ; Phase 8 (Grad-CAM) en cours sur Colab.</p>
+    <p class="subtitle">Rapport d'avancement — Projet SPÉ 1, à partir du jeu CAMELYON17-WILDS. Phases 0 à 8 terminées. Reste : rapport final et slides (Phase 9).</p>
     <div class="meta-row">
       <span><strong>Auteur</strong> Youcef Lagraa</span>
       <span><strong>Mis à jour le</strong> 18 novembre 2026</span>
@@ -255,7 +255,7 @@
       <div class="phase-chip done"><span class="num">PHASE 5</span><span class="name">Robustesse domain shift</span><span class="pill done"><span class="dot"></span>terminé</span></div>
       <div class="phase-chip done"><span class="num">PHASE 6</span><span class="name">Test hôpital 2</span><span class="pill done"><span class="dot"></span>terminé</span></div>
       <div class="phase-chip done"><span class="num">PHASE 7</span><span class="name">Patch → patiente</span><span class="pill done"><span class="dot"></span>terminé</span></div>
-      <div class="phase-chip active"><span class="num">PHASE 8</span><span class="name">Interprétabilité</span><span class="pill active"><span class="dot"></span>en cours</span></div>
+      <div class="phase-chip done"><span class="num">PHASE 8</span><span class="name">Interprétabilité</span><span class="pill done"><span class="dot"></span>terminé</span></div>
       <div class="phase-chip"><span class="num">PHASE 9</span><span class="name">Rapport final</span><span class="pill pending"><span class="dot"></span>à venir</span></div>
     </div>
   </header>
@@ -270,6 +270,7 @@
       <li><a href="#cnn">CNN par transfert d'apprentissage</a></li>
       <li><a href="#robustesse">Robustesse au domain shift</a></li>
       <li><a href="#hopital2">Test unique sur l'hôpital 2</a></li>
+      <li><a href="#gradcam">Interprétabilité (Grad-CAM)</a></li>
       <li><a href="#patch-patiente">Du patch à la patiente</a></li>
       <li><a href="#limites">Limites et points de vigilance</a></li>
       <li><a href="#suite">Prochaines étapes</a></li>
@@ -516,8 +517,27 @@
     <p>En remplaçant la classe officielle par la classe prédite sur les lames annotées : <strong>18 stades modifiés sur 34 patientes touchées</strong> — et les 18 vont dans le même sens, <strong>le sous-staging</strong> (0 sur-staging). C'est l'erreur la plus grave cliniquement : sous-estimer systématiquement l'étendue tumorale fait mécaniquement sous-estimer le stade.</p>
   </section>
 
+  <section id="gradcam">
+    <div class="section-head"><span class="section-no">09</span><h2>Interprétabilité : Grad-CAM</h2><span class="phase-tag">Phase 8 — terminée (version allégée)</span></div>
+    <div class="code-refs">
+      <span class="label">À vérifier</span>
+      <a class="code-chip" href="https://github.com/YoucefLgr/Breast_Cancer/blob/main/notebooks/07_interpretabilite.ipynb" target="_blank" rel="noopener">notebooks/07_interpretabilite.ipynb</a>
+      <a class="code-chip" href="https://github.com/YoucefLgr/Breast_Cancer/blob/main/src/interpret.py" target="_blank" rel="noopener">src/interpret.py</a>
+      <a class="code-chip" href="https://github.com/YoucefLgr/Breast_Cancer/blob/main/outputs/rapport/08_interpretabilite.md" target="_blank" rel="noopener">outputs/rapport/08_interpretabilite.md</a>
+    </div>
+    <p>8 patchs de l'hôpital 1 : 1 vrai positif, 1 vrai négatif, 3 faux positifs, 3 faux négatifs — modèle final de la Phase 6 (seuil 0,32).</p>
+    <figure>
+      <img src="figures/gradcam.png" alt="Grad-CAM sur 8 patchs de l'hôpital 1 : image originale et carte d'activation">
+      <figcaption>Image originale (haut) et carte Grad-CAM (bas) pour chaque exemple.</figcaption>
+    </figure>
+    <div class="callout rose">
+      <strong>Le biais couleur/texture est réel et visible, pas seulement supposé.</strong> Sur 2 des 3 faux positifs (p=0,95 et 0,74), l'activation se concentre sur du tissu fibreux rose clair, sans noyau cellulaire net — le modèle réagit à une texture de fond, pas à une morphologie tumorale.
+    </div>
+    <p><strong>Mais partiel</strong> : le vrai positif et les 3 faux négatifs activent bien sur des zones denses en noyaux cellulaires (même sous le seuil, 0,21 à 0,26 — plutôt un signal trop faible qu'absent), et le 3ᵉ faux positif (p=0,89) active sur un véritable amas cellulaire. Cohérent avec l'écart de généralisation H1→H2 (Phase 6) : un modèle qui s'appuie en partie sur la texture de fond est d'autant plus vulnérable au changement d'hôpital.</p>
+  </section>
+
   <section id="limites">
-    <div class="section-head"><span class="section-no">09</span><h2>Limites et points de vigilance</h2></div>
+    <div class="section-head"><span class="section-no">10</span><h2>Limites et points de vigilance</h2></div>
     <ul>
       <li><strong>Couleur vs morphologie non tranché.</strong> Le gain du CNN sur la référence est encourageant mais ne prouve pas qu'il regarde les cellules plutôt qu'un signal plus subtil lié à l'hôpital — vérification définitive par Grad-CAM en Phase 8.</li>
       <li><strong>Hôpital 2 toujours non testé.</strong> Toute performance annoncée jusqu'ici concerne l'hôpital 1 ; le vrai test de généralisation reste à faire, une seule fois.</li>
@@ -527,7 +547,7 @@
   </section>
 
   <section id="suite">
-    <div class="section-head"><span class="section-no">10</span><h2>Prochaines étapes</h2></div>
+    <div class="section-head"><span class="section-no">11</span><h2>Prochaines étapes</h2></div>
     <div class="table-wrap">
       <table>
         <thead><tr><th>Phase</th><th>Contenu</th><th>Échéance prévue</th></tr></thead>
