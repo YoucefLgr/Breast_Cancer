@@ -1,0 +1,91 @@
+{
+  "horodatage_utc": "2026-11-24T19:32:10.563929+00:00",
+  "variante_retenue": "base",
+  "seuil_final": 0.32,
+  "rappel_cible": 0.95,
+  "auc_val_ood": 0.9784078749999999,
+  "metriques_val_ood_seuil_final": [
+    {
+      "hopital": "H1 (validation hors distribution)",
+      "n": 4000,
+      "roc_auc": 0.9784,
+      "rappel": 0.9505,
+      "precision": 0.8756,
+      "f1": 0.9115,
+      "accuracy": 0.9078,
+      "vn": 1730,
+      "fp": 270,
+      "fn": 99,
+      "vp": 1901
+    },
+    {
+      "hopital": "ensemble",
+      "n": 4000,
+      "roc_auc": 0.9784,
+      "rappel": 0.9505,
+      "precision": 0.8756,
+      "f1": 0.9115,
+      "accuracy": 0.9078,
+      "vn": 1730,
+      "fp": 270,
+      "fn": 99,
+      "vp": 1901
+    }
+  ],
+  "metriques_hopital2_seuil_0.5": [
+    {
+      "hopital": "H2 (test, jamais vu)",
+      "n": 8000,
+      "roc_auc": 0.9272,
+      "rappel": 0.6382,
+      "precision": 0.9491,
+      "f1": 0.7632,
+      "accuracy": 0.802,
+      "vn": 3863,
+      "fp": 137,
+      "fn": 1447,
+      "vp": 2553
+    },
+    {
+      "hopital": "ensemble",
+      "n": 8000,
+      "roc_auc": 0.9272,
+      "rappel": 0.6382,
+      "precision": 0.9491,
+      "f1": 0.7632,
+      "accuracy": 0.802,
+      "vn": 3863,
+      "fp": 137,
+      "fn": 1447,
+      "vp": 2553
+    }
+  ],
+  "metriques_hopital2_seuil_final": [
+    {
+      "hopital": "H2 (test, jamais vu)",
+      "n": 8000,
+      "roc_auc": 0.9272,
+      "rappel": 0.711,
+      "precision": 0.9189,
+      "f1": 0.8017,
+      "accuracy": 0.8241,
+      "vn": 3749,
+      "fp": 251,
+      "fn": 1156,
+      "vp": 2844
+    },
+    {
+      "hopital": "ensemble",
+      "n": 8000,
+      "roc_auc": 0.9272,
+      "rappel": 0.711,
+      "precision": 0.9189,
+      "f1": 0.8017,
+      "accuracy": 0.8241,
+      "vn": 3749,
+      "fp": 251,
+      "fn": 1156,
+      "vp": 2844
+    }
+  ]
+}
