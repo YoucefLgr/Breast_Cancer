@@ -1,0 +1,699 @@
+{
+  "horodatage_utc": "2026-11-24T18:51:57.226498+00:00",
+  "portee": "40 lames annotees sur 50 (hopitaux 0,1,3,4 ; hopital 2 exclu avant la Phase 6)",
+  "modele_source": "reference Phase 3 (foret aleatoire, couleur+texture)",
+  "taille_patch_mm": 0.09331199999999999,
+  "source_resolution": "PCam (github.com/basveeling/pcam) : 40x natif 0.243 um/px, echantillonnage 10x",
+  "concordance_regles_pN_officiel": 1.0,
+  "classification_lames": [
+    {
+      "slide": 0,
+      "patient": 4,
+      "node": 4,
+      "hopital": "H0 (entraînement)",
+      "n_patchs_disponibles": 683,
+      "classe_officielle": "itc",
+      "classe_predite": "itc",
+      "n_patchs_zone_max": 1,
+      "aire_mm2": 0.00871,
+      "cote_equivalent_mm": 0.0933
+    },
+    {
+      "slide": 1,
+      "patient": 9,
+      "node": 1,
+      "hopital": "H0 (entraînement)",
+      "n_patchs_disponibles": 692,
+      "classe_officielle": "micro",
+      "classe_predite": "itc",
+      "n_patchs_zone_max": 3,
+      "aire_mm2": 0.02612,
+      "cote_equivalent_mm": 0.1616
+    },
+    {
+      "slide": 2,
+      "patient": 10,
+      "node": 4,
+      "hopital": "H0 (entraînement)",
+      "n_patchs_disponibles": 602,
+      "classe_officielle": "micro",
+      "classe_predite": "micro",
+      "n_patchs_zone_max": 5,
+      "aire_mm2": 0.04354,
+      "cote_equivalent_mm": 0.2087
+    },
+    {
+      "slide": 3,
+      "patient": 12,
+      "node": 0,
+      "hopital": "H0 (entraînement)",
+      "n_patchs_disponibles": 2059,
+      "classe_officielle": "macro",
+      "classe_predite": "micro",
+      "n_patchs_zone_max": 11,
+      "aire_mm2": 0.09578,
+      "cote_equivalent_mm": 0.3095
+    },
+    {
+      "slide": 4,
+      "patient": 15,
+      "node": 1,
+      "hopital": "H0 (entraînement)",
+      "n_patchs_disponibles": 1089,
+      "classe_officielle": "macro",
+      "classe_predite": "micro",
+      "n_patchs_zone_max": 8,
+      "aire_mm2": 0.06966,
+      "cote_equivalent_mm": 0.2639
+    },
+    {
+      "slide": 5,
+      "patient": 15,
+      "node": 2,
+      "hopital": "H0 (entraînement)",
+      "n_patchs_disponibles": 512,
+      "classe_officielle": "macro",
+      "classe_predite": "itc",
+      "n_patchs_zone_max": 4,
+      "aire_mm2": 0.03483,
+      "cote_equivalent_mm": 0.1866
+    },
+    {
+      "slide": 6,
+      "patient": 16,
+      "node": 1,
+      "hopital": "H0 (entraînement)",
+      "n_patchs_disponibles": 496,
+      "classe_officielle": "itc",
+      "classe_predite": "itc",
+      "n_patchs_zone_max": 1,
+      "aire_mm2": 0.00871,
+      "cote_equivalent_mm": 0.0933
+    },
+    {
+      "slide": 7,
+      "patient": 17,
+      "node": 1,
+      "hopital": "H0 (entraînement)",
+      "n_patchs_disponibles": 252,
+      "classe_officielle": "itc",
+      "classe_predite": "negative",
+      "n_patchs_zone_max": 0,
+      "aire_mm2": 0.0,
+      "cote_equivalent_mm": 0.0
+    },
+    {
+      "slide": 8,
+      "patient": 17,
+      "node": 2,
+      "hopital": "H0 (entraînement)",
+      "n_patchs_disponibles": 2024,
+      "classe_officielle": "macro",
+      "classe_predite": "micro",
+      "n_patchs_zone_max": 7,
+      "aire_mm2": 0.06095,
+      "cote_equivalent_mm": 0.2469
+    },
+    {
+      "slide": 9,
+      "patient": 17,
+      "node": 4,
+      "hopital": "H0 (entraînement)",
+      "n_patchs_disponibles": 591,
+      "classe_officielle": "micro",
+      "classe_predite": "itc",
+      "n_patchs_zone_max": 4,
+      "aire_mm2": 0.03483,
+      "cote_equivalent_mm": 0.1866
+    },
+    {
+      "slide": 10,
+      "patient": 20,
+      "node": 2,
+      "hopital": "H1 (validation hors distribution)",
+      "n_patchs_disponibles": 259,
+      "classe_officielle": "micro",
+      "classe_predite": "itc",
+      "n_patchs_zone_max": 1,
+      "aire_mm2": 0.00871,
+      "cote_equivalent_mm": 0.0933
+    },
+    {
+      "slide": 11,
+      "patient": 20,
+      "node": 4,
+      "hopital": "H1 (validation hors distribution)",
+      "n_patchs_disponibles": 598,
+      "classe_officielle": "macro",
+      "classe_predite": "micro",
+      "n_patchs_zone_max": 7,
+      "aire_mm2": 0.06095,
+      "cote_equivalent_mm": 0.2469
+    },
+    {
+      "slide": 12,
+      "patient": 21,
+      "node": 3,
+      "hopital": "H1 (validation hors distribution)",
+      "n_patchs_disponibles": 195,
+      "classe_officielle": "micro",
+      "classe_predite": "itc",
+      "n_patchs_zone_max": 1,
+      "aire_mm2": 0.00871,
+      "cote_equivalent_mm": 0.0933
+    },
+    {
+      "slide": 13,
+      "patient": 22,
+      "node": 4,
+      "hopital": "H1 (validation hors distribution)",
+      "n_patchs_disponibles": 1165,
+      "classe_officielle": "macro",
+      "classe_predite": "micro",
+      "n_patchs_zone_max": 9,
+      "aire_mm2": 0.07836,
+      "cote_equivalent_mm": 0.2799
+    },
+    {
+      "slide": 14,
+      "patient": 24,
+      "node": 1,
+      "hopital": "H1 (validation hors distribution)",
+      "n_patchs_disponibles": 103,
+      "classe_officielle": "itc",
+      "classe_predite": "itc",
+      "n_patchs_zone_max": 1,
+      "aire_mm2": 0.00871,
+      "cote_equivalent_mm": 0.0933
+    },
+    {
+      "slide": 15,
+      "patient": 24,
+      "node": 2,
+      "hopital": "H1 (validation hors distribution)",
+      "n_patchs_disponibles": 335,
+      "classe_officielle": "itc",
+      "classe_predite": "itc",
+      "n_patchs_zone_max": 1,
+      "aire_mm2": 0.00871,
+      "cote_equivalent_mm": 0.0933
+    },
+    {
+      "slide": 16,
+      "patient": 34,
+      "node": 3,
+      "hopital": "H1 (validation hors distribution)",
+      "n_patchs_disponibles": 592,
+      "classe_officielle": "macro",
+      "classe_predite": "micro",
+      "n_patchs_zone_max": 7,
+      "aire_mm2": 0.06095,
+      "cote_equivalent_mm": 0.2469
+    },
+    {
+      "slide": 17,
+      "patient": 36,
+      "node": 3,
+      "hopital": "H1 (validation hors distribution)",
+      "n_patchs_disponibles": 284,
+      "classe_officielle": "micro",
+      "classe_predite": "itc",
+      "n_patchs_zone_max": 2,
+      "aire_mm2": 0.01741,
+      "cote_equivalent_mm": 0.132
+    },
+    {
+      "slide": 18,
+      "patient": 38,
+      "node": 2,
+      "hopital": "H1 (validation hors distribution)",
+      "n_patchs_disponibles": 159,
+      "classe_officielle": "micro",
+      "classe_predite": "itc",
+      "n_patchs_zone_max": 2,
+      "aire_mm2": 0.01741,
+      "cote_equivalent_mm": 0.132
+    },
+    {
+      "slide": 19,
+      "patient": 39,
+      "node": 1,
+      "hopital": "H1 (validation hors distribution)",
+      "n_patchs_disponibles": 310,
+      "classe_officielle": "micro",
+      "classe_predite": "itc",
+      "n_patchs_zone_max": 1,
+      "aire_mm2": 0.00871,
+      "cote_equivalent_mm": 0.0933
+    },
+    {
+      "slide": 30,
+      "patient": 60,
+      "node": 3,
+      "hopital": "H3 (entraînement)",
+      "n_patchs_disponibles": 720,
+      "classe_officielle": "itc",
+      "classe_predite": "negative",
+      "n_patchs_zone_max": 0,
+      "aire_mm2": 0.0,
+      "cote_equivalent_mm": 0.0
+    },
+    {
+      "slide": 31,
+      "patient": 61,
+      "node": 4,
+      "hopital": "H3 (entraînement)",
+      "n_patchs_disponibles": 233,
+      "classe_officielle": "micro",
+      "classe_predite": "itc",
+      "n_patchs_zone_max": 1,
+      "aire_mm2": 0.00871,
+      "cote_equivalent_mm": 0.0933
+    },
+    {
+      "slide": 32,
+      "patient": 62,
+      "node": 2,
+      "hopital": "H3 (entraînement)",
+      "n_patchs_disponibles": 610,
+      "classe_officielle": "macro",
+      "classe_predite": "itc",
+      "n_patchs_zone_max": 4,
+      "aire_mm2": 0.03483,
+      "cote_equivalent_mm": 0.1866
+    },
+    {
+      "slide": 33,
+      "patient": 64,
+      "node": 0,
+      "hopital": "H3 (entraînement)",
+      "n_patchs_disponibles": 285,
+      "classe_officielle": "itc",
+      "classe_predite": "itc",
+      "n_patchs_zone_max": 1,
+      "aire_mm2": 0.00871,
+      "cote_equivalent_mm": 0.0933
+    },
+    {
+      "slide": 34,
+      "patient": 66,
+      "node": 2,
+      "hopital": "H3 (entraînement)",
+      "n_patchs_disponibles": 261,
+      "classe_officielle": "micro",
+      "classe_predite": "itc",
+      "n_patchs_zone_max": 1,
+      "aire_mm2": 0.00871,
+      "cote_equivalent_mm": 0.0933
+    },
+    {
+      "slide": 35,
+      "patient": 67,
+      "node": 4,
+      "hopital": "H3 (entraînement)",
+      "n_patchs_disponibles": 450,
+      "classe_officielle": "micro",
+      "classe_predite": "itc",
+      "n_patchs_zone_max": 1,
+      "aire_mm2": 0.00871,
+      "cote_equivalent_mm": 0.0933
+    },
+    {
+      "slide": 36,
+      "patient": 68,
+      "node": 1,
+      "hopital": "H3 (entraînement)",
+      "n_patchs_disponibles": 748,
+      "classe_officielle": "itc",
+      "classe_predite": "negative",
+      "n_patchs_zone_max": 0,
+      "aire_mm2": 0.0,
+      "cote_equivalent_mm": 0.0
+    },
+    {
+      "slide": 37,
+      "patient": 72,
+      "node": 0,
+      "hopital": "H3 (entraînement)",
+      "n_patchs_disponibles": 366,
+      "classe_officielle": "itc",
+      "classe_predite": "negative",
+      "n_patchs_zone_max": 0,
+      "aire_mm2": 0.0,
+      "cote_equivalent_mm": 0.0
+    },
+    {
+      "slide": 38,
+      "patient": 73,
+      "node": 1,
+      "hopital": "H3 (entraînement)",
+      "n_patchs_disponibles": 4057,
+      "classe_officielle": "macro",
+      "classe_predite": "micro",
+      "n_patchs_zone_max": 5,
+      "aire_mm2": 0.04354,
+      "cote_equivalent_mm": 0.2087
+    },
+    {
+      "slide": 39,
+      "patient": 75,
+      "node": 4,
+      "hopital": "H3 (entraînement)",
+      "n_patchs_disponibles": 1270,
+      "classe_officielle": "macro",
+      "classe_predite": "micro",
+      "n_patchs_zone_max": 6,
+      "aire_mm2": 0.05224,
+      "cote_equivalent_mm": 0.2286
+    },
+    {
+      "slide": 40,
+      "patient": 80,
+      "node": 1,
+      "hopital": "H4 (entraînement)",
+      "n_patchs_disponibles": 446,
+      "classe_officielle": "itc",
+      "classe_predite": "itc",
+      "n_patchs_zone_max": 1,
+      "aire_mm2": 0.00871,
+      "cote_equivalent_mm": 0.0933
+    },
+    {
+      "slide": 41,
+      "patient": 81,
+      "node": 4,
+      "hopital": "H4 (entraînement)",
+      "n_patchs_disponibles": 678,
+      "classe_officielle": "itc",
+      "classe_predite": "itc",
+      "n_patchs_zone_max": 1,
+      "aire_mm2": 0.00871,
+      "cote_equivalent_mm": 0.0933
+    },
+    {
+      "slide": 42,
+      "patient": 86,
+      "node": 0,
+      "hopital": "H4 (entraînement)",
+      "n_patchs_disponibles": 466,
+      "classe_officielle": "itc",
+      "classe_predite": "itc",
+      "n_patchs_zone_max": 1,
+      "aire_mm2": 0.00871,
+      "cote_equivalent_mm": 0.0933
+    },
+    {
+      "slide": 43,
+      "patient": 86,
+      "node": 4,
+      "hopital": "H4 (entraînement)",
+      "n_patchs_disponibles": 511,
+      "classe_officielle": "itc",
+      "classe_predite": "itc",
+      "n_patchs_zone_max": 1,
+      "aire_mm2": 0.00871,
+      "cote_equivalent_mm": 0.0933
+    },
+    {
+      "slide": 44,
+      "patient": 87,
+      "node": 0,
+      "hopital": "H4 (entraînement)",
+      "n_patchs_disponibles": 522,
+      "classe_officielle": "itc",
+      "classe_predite": "itc",
+      "n_patchs_zone_max": 1,
+      "aire_mm2": 0.00871,
+      "cote_equivalent_mm": 0.0933
+    },
+    {
+      "slide": 45,
+      "patient": 88,
+      "node": 1,
+      "hopital": "H4 (entraînement)",
+      "n_patchs_disponibles": 407,
+      "classe_officielle": "micro",
+      "classe_predite": "itc",
+      "n_patchs_zone_max": 3,
+      "aire_mm2": 0.02612,
+      "cote_equivalent_mm": 0.1616
+    },
+    {
+      "slide": 46,
+      "patient": 89,
+      "node": 3,
+      "hopital": "H4 (entraînement)",
+      "n_patchs_disponibles": 332,
+      "classe_officielle": "micro",
+      "classe_predite": "itc",
+      "n_patchs_zone_max": 1,
+      "aire_mm2": 0.00871,
+      "cote_equivalent_mm": 0.0933
+    },
+    {
+      "slide": 47,
+      "patient": 92,
+      "node": 1,
+      "hopital": "H4 (entraînement)",
+      "n_patchs_disponibles": 906,
+      "classe_officielle": "macro",
+      "classe_predite": "itc",
+      "n_patchs_zone_max": 4,
+      "aire_mm2": 0.03483,
+      "cote_equivalent_mm": 0.1866
+    },
+    {
+      "slide": 48,
+      "patient": 96,
+      "node": 0,
+      "hopital": "H4 (entraînement)",
+      "n_patchs_disponibles": 3747,
+      "classe_officielle": "macro",
+      "classe_predite": "itc",
+      "n_patchs_zone_max": 4,
+      "aire_mm2": 0.03483,
+      "cote_equivalent_mm": 0.1866
+    },
+    {
+      "slide": 49,
+      "patient": 99,
+      "node": 4,
+      "hopital": "H4 (entraînement)",
+      "n_patchs_disponibles": 985,
+      "classe_officielle": "macro",
+      "classe_predite": "micro",
+      "n_patchs_zone_max": 5,
+      "aire_mm2": 0.04354,
+      "cote_equivalent_mm": 0.2087
+    }
+  ],
+  "exactitude_classe_lame": 0.275,
+  "impact_stade_pN": [
+    {
+      "patiente": "patient_004",
+      "stade_officiel": "pN0(i+)",
+      "stade_avec_predictions": "pN0(i+)",
+      "sens_erreur": "inchange"
+    },
+    {
+      "patiente": "patient_009",
+      "stade_officiel": "pN1mi",
+      "stade_avec_predictions": "pN0(i+)",
+      "sens_erreur": "sous_staging"
+    },
+    {
+      "patiente": "patient_010",
+      "stade_officiel": "pN1mi",
+      "stade_avec_predictions": "pN1mi",
+      "sens_erreur": "inchange"
+    },
+    {
+      "patiente": "patient_012",
+      "stade_officiel": "pN1",
+      "stade_avec_predictions": "pN1mi",
+      "sens_erreur": "sous_staging"
+    },
+    {
+      "patiente": "patient_015",
+      "stade_officiel": "pN1",
+      "stade_avec_predictions": "pN1mi",
+      "sens_erreur": "sous_staging"
+    },
+    {
+      "patiente": "patient_016",
+      "stade_officiel": "pN1",
+      "stade_avec_predictions": "pN1",
+      "sens_erreur": "inchange"
+    },
+    {
+      "patiente": "patient_017",
+      "stade_officiel": "pN1",
+      "stade_avec_predictions": "pN1",
+      "sens_erreur": "inchange"
+    },
+    {
+      "patiente": "patient_020",
+      "stade_officiel": "pN1",
+      "stade_avec_predictions": "pN1mi",
+      "sens_erreur": "sous_staging"
+    },
+    {
+      "patiente": "patient_021",
+      "stade_officiel": "pN2",
+      "stade_avec_predictions": "pN1",
+      "sens_erreur": "sous_staging"
+    },
+    {
+      "patiente": "patient_022",
+      "stade_officiel": "pN1",
+      "stade_avec_predictions": "pN1mi",
+      "sens_erreur": "sous_staging"
+    },
+    {
+      "patiente": "patient_024",
+      "stade_officiel": "pN0(i+)",
+      "stade_avec_predictions": "pN0(i+)",
+      "sens_erreur": "inchange"
+    },
+    {
+      "patiente": "patient_034",
+      "stade_officiel": "pN1",
+      "stade_avec_predictions": "pN1mi",
+      "sens_erreur": "sous_staging"
+    },
+    {
+      "patiente": "patient_036",
+      "stade_officiel": "pN1mi",
+      "stade_avec_predictions": "pN0(i+)",
+      "sens_erreur": "sous_staging"
+    },
+    {
+      "patiente": "patient_038",
+      "stade_officiel": "pN1mi",
+      "stade_avec_predictions": "pN1mi",
+      "sens_erreur": "inchange"
+    },
+    {
+      "patiente": "patient_039",
+      "stade_officiel": "pN1",
+      "stade_avec_predictions": "pN1",
+      "sens_erreur": "inchange"
+    },
+    {
+      "patiente": "patient_060",
+      "stade_officiel": "pN1mi",
+      "stade_avec_predictions": "pN1mi",
+      "sens_erreur": "inchange"
+    },
+    {
+      "patiente": "patient_061",
+      "stade_officiel": "pN1mi",
+      "stade_avec_predictions": "pN0(i+)",
+      "sens_erreur": "sous_staging"
+    },
+    {
+      "patiente": "patient_062",
+      "stade_officiel": "pN2",
+      "stade_avec_predictions": "pN1",
+      "sens_erreur": "sous_staging"
+    },
+    {
+      "patiente": "patient_064",
+      "stade_officiel": "pN0(i+)",
+      "stade_avec_predictions": "pN0(i+)",
+      "sens_erreur": "inchange"
+    },
+    {
+      "patiente": "patient_066",
+      "stade_officiel": "pN1",
+      "stade_avec_predictions": "pN1",
+      "sens_erreur": "inchange"
+    },
+    {
+      "patiente": "patient_067",
+      "stade_officiel": "pN1mi",
+      "stade_avec_predictions": "pN0(i+)",
+      "sens_erreur": "sous_staging"
+    },
+    {
+      "patiente": "patient_068",
+      "stade_officiel": "pN0(i+)",
+      "stade_avec_predictions": "pN0(i+)",
+      "sens_erreur": "inchange"
+    },
+    {
+      "patiente": "patient_072",
+      "stade_officiel": "pN1",
+      "stade_avec_predictions": "pN1",
+      "sens_erreur": "inchange"
+    },
+    {
+      "patiente": "patient_073",
+      "stade_officiel": "pN1",
+      "stade_avec_predictions": "pN1mi",
+      "sens_erreur": "sous_staging"
+    },
+    {
+      "patiente": "patient_075",
+      "stade_officiel": "pN1",
+      "stade_avec_predictions": "pN1mi",
+      "sens_erreur": "sous_staging"
+    },
+    {
+      "patiente": "patient_080",
+      "stade_officiel": "pN1",
+      "stade_avec_predictions": "pN1",
+      "sens_erreur": "inchange"
+    },
+    {
+      "patiente": "patient_081",
+      "stade_officiel": "pN1mi",
+      "stade_avec_predictions": "pN1mi",
+      "sens_erreur": "inchange"
+    },
+    {
+      "patiente": "patient_086",
+      "stade_officiel": "pN0(i+)",
+      "stade_avec_predictions": "pN0(i+)",
+      "sens_erreur": "inchange"
+    },
+    {
+      "patiente": "patient_087",
+      "stade_officiel": "pN0(i+)",
+      "stade_avec_predictions": "pN0(i+)",
+      "sens_erreur": "inchange"
+    },
+    {
+      "patiente": "patient_088",
+      "stade_officiel": "pN1mi",
+      "stade_avec_predictions": "pN0(i+)",
+      "sens_erreur": "sous_staging"
+    },
+    {
+      "patiente": "patient_089",
+      "stade_officiel": "pN1mi",
+      "stade_avec_predictions": "pN0(i+)",
+      "sens_erreur": "sous_staging"
+    },
+    {
+      "patiente": "patient_092",
+      "stade_officiel": "pN2",
+      "stade_avec_predictions": "pN1",
+      "sens_erreur": "sous_staging"
+    },
+    {
+      "patiente": "patient_096",
+      "stade_officiel": "pN2",
+      "stade_avec_predictions": "pN1",
+      "sens_erreur": "sous_staging"
+    },
+    {
+      "patiente": "patient_099",
+      "stade_officiel": "pN1",
+      "stade_avec_predictions": "pN1mi",
+      "sens_erreur": "sous_staging"
+    }
+  ],
+  "n_stades_modifies": 18,
+  "limite_principale": "Sous-echantillon = fraction des patchs par lame, pas la lame entiere : sous-estime fortement l'etendue des zones tumorales (composantes connexes sur grille eparse). Expliquerait la faible exactitude et le biais systematique vers le sous-staging observes ici."
+}
