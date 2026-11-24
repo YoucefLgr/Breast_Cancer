@@ -215,7 +215,7 @@
   <header class="hero">
     <div class="eyebrow"><span class="dot"></span>MBA 2 — Data &amp; BI · Epitech · 2026-2027</div>
     <h1 class="title">Détection automatique de métastases du cancer du sein</h1>
-    <p class="subtitle">Rapport d'avancement — Projet SPÉ 1, à partir du jeu CAMELYON17-WILDS. Phases 0 à 5 et 7 terminées ; Phases 6 et 8 en cours sur Colab.</p>
+    <p class="subtitle">Rapport d'avancement — Projet SPÉ 1, à partir du jeu CAMELYON17-WILDS. Phases 0 à 7 terminées ; Phase 8 (Grad-CAM) en cours sur Colab.</p>
     <div class="meta-row">
       <span><strong>Auteur</strong> Youcef Lagraa</span>
       <span><strong>Mis à jour le</strong> 18 novembre 2026</span>
@@ -225,24 +225,24 @@
 
     <div class="stat-grid">
       <div class="stat">
-        <div class="label">ROC-AUC, hôpital 1 (CNN)</div>
-        <div class="value">0,973</div>
-        <div class="delta">+0,075 vs référence simple</div>
+        <div class="label">Rappel sur hôpital 1 (seuil figé)</div>
+        <div class="value">95,05 %</div>
+        <div class="delta neutral">cible atteinte, par construction</div>
       </div>
       <div class="stat">
-        <div class="label">Rappel après seuil ajusté</div>
-        <div class="value">95,2 %</div>
-        <div class="delta">vs 93,9 % au seuil par défaut</div>
+        <div class="label">Rappel au même seuil, hôpital 2</div>
+        <div class="value">71,1 %</div>
+        <div class="delta" style="color:var(--rose)">1 156 métastases manquées, pas 99</div>
       </div>
       <div class="stat">
-        <div class="label">Patchs analysés</div>
-        <div class="value">455 954</div>
-        <div class="delta neutral">+ sous-échantillon de 39 000</div>
+        <div class="label">Précision à 1 % de prévalence</div>
+        <div class="value">6,6 %</div>
+        <div class="delta neutral">contre 87,6 % sur le jeu équilibré</div>
       </div>
       <div class="stat">
         <div class="label">Hôpital 2 (test)</div>
-        <div class="value">0 fois</div>
-        <div class="delta neutral">réservé à la Phase 6</div>
+        <div class="value">1 fois</div>
+        <div class="delta neutral">Phase 6, résultat définitif</div>
       </div>
     </div>
 
@@ -253,7 +253,7 @@
       <div class="phase-chip done"><span class="num">PHASE 3</span><span class="name">Référence simple</span><span class="pill done"><span class="dot"></span>terminé</span></div>
       <div class="phase-chip done"><span class="num">PHASE 4</span><span class="name">CNN par transfert</span><span class="pill done"><span class="dot"></span>terminé</span></div>
       <div class="phase-chip done"><span class="num">PHASE 5</span><span class="name">Robustesse domain shift</span><span class="pill done"><span class="dot"></span>terminé</span></div>
-      <div class="phase-chip active"><span class="num">PHASE 6</span><span class="name">Test hôpital 2</span><span class="pill active"><span class="dot"></span>en cours</span></div>
+      <div class="phase-chip done"><span class="num">PHASE 6</span><span class="name">Test hôpital 2</span><span class="pill done"><span class="dot"></span>terminé</span></div>
       <div class="phase-chip done"><span class="num">PHASE 7</span><span class="name">Patch → patiente</span><span class="pill done"><span class="dot"></span>terminé</span></div>
       <div class="phase-chip active"><span class="num">PHASE 8</span><span class="name">Interprétabilité</span><span class="pill active"><span class="dot"></span>en cours</span></div>
       <div class="phase-chip"><span class="num">PHASE 9</span><span class="name">Rapport final</span><span class="pill pending"><span class="dot"></span>à venir</span></div>
@@ -269,6 +269,7 @@
       <li><a href="#reference">Référence simple</a></li>
       <li><a href="#cnn">CNN par transfert d'apprentissage</a></li>
       <li><a href="#robustesse">Robustesse au domain shift</a></li>
+      <li><a href="#hopital2">Test unique sur l'hôpital 2</a></li>
       <li><a href="#patch-patiente">Du patch à la patiente</a></li>
       <li><a href="#limites">Limites et points de vigilance</a></li>
       <li><a href="#suite">Prochaines étapes</a></li>
@@ -434,8 +435,49 @@
     </div>
   </section>
 
+  <section id="hopital2">
+    <div class="section-head"><span class="section-no">07</span><h2>Test unique sur l'hôpital 2</h2><span class="phase-tag">Phase 6 — terminée</span></div>
+    <div class="code-refs">
+      <span class="label">À vérifier</span>
+      <a class="code-chip" href="https://github.com/YoucefLgr/Breast_Cancer/blob/main/notebooks/06_eval_finale.ipynb" target="_blank" rel="noopener">notebooks/06_eval_finale.ipynb</a>
+      <a class="code-chip" href="https://github.com/YoucefLgr/Breast_Cancer/blob/main/outputs/metrics/06_eval_finale.json" target="_blank" rel="noopener">outputs/metrics/06_eval_finale.json</a>
+      <a class="code-chip" href="https://github.com/YoucefLgr/Breast_Cancer/blob/main/outputs/rapport/06_eval_finale.md" target="_blank" rel="noopener">outputs/rapport/06_eval_finale.md</a>
+    </div>
+    <p><strong>Le seul résultat de ce projet qui mesure une vraie généralisation à un hôpital jamais vu.</strong> Modèle : base (Phase 5, égalité statistique), seuil 0,32 figé sur l'hôpital 1 pour un rappel ≥ 95 %, avant de charger l'hôpital 2.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th></th><th class="num">Hôpital 1 (réglages)</th><th class="num">Hôpital 2 (jamais vu)</th></tr></thead>
+        <tbody>
+          <tr><td>ROC-AUC</td><td class="num">0,978</td><td class="num">0,927</td></tr>
+          <tr class="highlight"><td>Rappel au seuil 0,32</td><td class="num">95,05 %</td><td class="num">71,1 %</td></tr>
+          <tr><td>Précision au seuil 0,32</td><td class="num">87,6 %</td><td class="num">91,9 %</td></tr>
+          <tr class="highlight"><td>Faux négatifs (sur 4 000 patchs tumoraux)</td><td class="num">99</td><td class="num">1 156</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout rose">
+      <strong>Le seuil réglé sur l'hôpital 1 ne transfère pas sur l'hôpital 2.</strong> 95,05 % de rappel garanti sur H1 ne donne que 71,1 % sur H2 — 1 156 métastases manquées sur 4 000, contre 99 sur H1. La chute de rappel est plus sévère que la seule baisse d'AUC (−0,051 point) ne le suggère : le changement d'hôpital déplace aussi la calibration des probabilités, pas seulement leur pouvoir discriminant. C'est la démonstration chiffrée, concrète, du risque annoncé dès la Phase 1.
+    </div>
+
+    <h3>Précision à prévalence clinique réaliste (demandé sur H1)</h3>
+    <p>À partir du rappel et de la spécificité de H1 (95,05 % et 86,5 %), règle de Bayes :</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Prévalence</th><th class="num">Précision attendue</th></tr></thead>
+        <tbody>
+          <tr><td>50 % (le jeu WILDS lui-même)</td><td class="num">87,6 %</td></tr>
+          <tr class="highlight"><td>5 %</td><td class="num">27,0 %</td></tr>
+          <tr class="highlight"><td>1 %</td><td class="num">6,6 %</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>À 1 % de prévalence, plus de 9 alertes sur 10 seraient de fausses alertes</strong> — une conséquence mathématique du déséquilibre réel, pas un défaut du modèle : un tel système ne peut fonctionner qu'avec un pathologiste qui relit chaque alerte.</p>
+  </section>
+
   <section id="patch-patiente">
-    <div class="section-head"><span class="section-no">07</span><h2>Du patch à la patiente</h2><span class="phase-tag">Phase 7 — terminée (version allégée)</span></div>
+    <div class="section-head"><span class="section-no">08</span><h2>Du patch à la patiente</h2><span class="phase-tag">Phase 7 — terminée (version allégée)</span></div>
     <div class="code-refs">
       <span class="label">À vérifier</span>
       <a class="code-chip" href="https://github.com/YoucefLgr/Breast_Cancer/blob/main/notebooks/05_patch_to_patient.ipynb" target="_blank" rel="noopener">notebooks/05_patch_to_patient.ipynb</a>
@@ -475,7 +517,7 @@
   </section>
 
   <section id="limites">
-    <div class="section-head"><span class="section-no">08</span><h2>Limites et points de vigilance</h2></div>
+    <div class="section-head"><span class="section-no">09</span><h2>Limites et points de vigilance</h2></div>
     <ul>
       <li><strong>Couleur vs morphologie non tranché.</strong> Le gain du CNN sur la référence est encourageant mais ne prouve pas qu'il regarde les cellules plutôt qu'un signal plus subtil lié à l'hôpital — vérification définitive par Grad-CAM en Phase 8.</li>
       <li><strong>Hôpital 2 toujours non testé.</strong> Toute performance annoncée jusqu'ici concerne l'hôpital 1 ; le vrai test de généralisation reste à faire, une seule fois.</li>
@@ -485,7 +527,7 @@
   </section>
 
   <section id="suite">
-    <div class="section-head"><span class="section-no">09</span><h2>Prochaines étapes</h2></div>
+    <div class="section-head"><span class="section-no">10</span><h2>Prochaines étapes</h2></div>
     <div class="table-wrap">
       <table>
         <thead><tr><th>Phase</th><th>Contenu</th><th>Échéance prévue</th></tr></thead>
