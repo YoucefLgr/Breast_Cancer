@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Rapport SPE1</title>
+<style>
+  @page { size: A4; margin: 2.2cm 2.1cm 2.3cm; }
+  *{ box-sizing: border-box; }
+  body{
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 11pt;
+    line-height: 1.5;
+    color: #1a1a1a;
+    margin: 0;
+  }
+  .page-de-garde{
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    page-break-after: always;
+  }
+  .page-de-garde .kicker{ font-size: 12pt; letter-spacing: .08em; text-transform: uppercase; color: #555; margin-bottom: 36px; }
+  .page-de-garde h1{ font-size: 26pt; line-height: 1.25; max-width: 15cm; margin: 0 0 14px; }
+  .page-de-garde .sub{ font-size: 13pt; color: #444; max-width: 13cm; margin-bottom: 50px; }
+  .page-de-garde .meta{ font-size: 11pt; color: #333; line-height: 1.9; }
+  .page-de-garde .meta strong{ font-weight: 700; }
+
+  h1.titre-section{
+    font-size: 16pt; margin: 0 0 14px; padding-bottom: 6px; border-bottom: 1.5pt solid #1a1a1a;
+    break-before: page;
+  }
+  h1.titre-section.pas-de-saut{ break-before: avoid; }
+  h2{ font-size: 13pt; margin: 22px 0 8px; }
+  h3{ font-size: 11.5pt; margin: 16px 0 6px; font-style: italic; }
+  p{ margin: 0 0 9px; text-align: justify; }
+  ul, ol{ margin: 0 0 10px; padding-left: 1.3em; }
+  li{ margin-bottom: 4px; }
+  strong{ font-weight: 700; }
+  code{ font-family: "Consolas", monospace; font-size: 9.5pt; background: #f1f1ee; padding: 0 3px; border-radius: 2px; }
+
+  table{ width: 100%; border-collapse: collapse; margin: 10px 0 14px; font-size: 10pt; break-inside: avoid; }
+  th, td{ border: 0.75pt solid #999; padding: 4px 7px; text-align: left; }
+  th{ background: #ececea; font-weight: 700; }
+  td.num, th.num{ text-align: right; font-variant-numeric: tabular-nums; }
+  tr.highlight td{ background: #f3f0fb; font-weight: 700; }
+
+  figure{ margin: 12px 0; break-inside: avoid; }
+  figure img{ width: 100%; display: block; border: 0.5pt solid #ccc; }
+  figcaption{ font-size: 9pt; color: #555; margin-top: 5px; font-style: italic; }
+
+  .callout{ border-left: 3pt solid #4a3aa7; background: #f4f2fb; padding: 8px 12px; margin: 10px 0; font-size: 10.3pt; }
+  .callout.alerte{ border-left-color: #a85072; background: #fbf1f4; }
+
+  .deux-col{ display: flex; gap: 20px; }
+  .deux-col > div{ flex: 1; }
+
+  .sources li{ font-size: 9.8pt; }
+
+  .no-break{ break-inside: avoid; }
+</style>
+</head>
+<body>
+
+<div class="page-de-garde">
+  <div class="kicker">MBA 2 — Data &amp; BI · Epitech · 2026-2027 · Projet SPÉ 1</div>
+  <h1>Détection automatique de métastases du cancer du sein dans des images histopathologiques</h1>
+  <div class="sub">À partir du challenge international CAMELYON17 et du benchmark Camelyon17-WILDS</div>
+  <div class="meta">
+    <div><strong>Auteur :</strong> Youcef Lagraa (et l'équipe)</div>
+    <div><strong>Date :</strong> 26 novembre 2026</div>
+    <div><strong>Soutenance :</strong> 27 novembre 2026</div>
+    <div><strong>Dépôt :</strong> github.com/YoucefLgr/Breast_Cancer</div>
+  </div>
+</div>
+
+<h1 class="titre-section pas-de-saut">1. Contexte et objectifs</h1>
+
+<p>Pour déterminer le stade d'un cancer du sein, le pathologiste examine au microscope les ganglions lymphatiques prélevés et y cherche des métastases, sur des coupes colorées à l'hématoxyline-éosine (H&amp;E) numérisées en images de lame entière (<em>Whole Slide Images</em>, WSI) de plusieurs gigapixels. C'est un travail long, répétitif, où de petites métastases peuvent passer inaperçues. Le challenge CAMELYON17 (Bándi et al., 2019) vise à automatiser cette détection ; le benchmark dérivé Camelyon17-WILDS (Koh et al., 2021) y ajoute une contrainte réaliste : les lames proviennent de <strong>cinq hôpitaux néerlandais</strong>, chacun avec son scanner et son protocole de coloration propres, ce qui introduit un <em>domain shift</em> de couleur entre hôpitaux, indépendant de la présence de tumeur.</p>
+
+<p>Le problème se résout à trois niveaux emboîtés : le <strong>patch</strong> (96×96 px, classé tumoral ou non), la <strong>lame</strong> (un ganglion, classée selon la taille de sa plus grande métastase : négative, cellules tumorales isolées ITC ≤ 0,2 mm, micro-métastase ≤ 2 mm, macro-métastase &gt; 2 mm), et la <strong>patiente</strong> (stade pN, déduit des classes de ses jusqu'à 5 ganglions). Le CNN ne prédit jamais directement un stade : toute la chaîne d'agrégation doit être explicite et vérifiable, car c'est elle qui transforme une erreur locale en erreur clinique.</p>
+
+<p>Trois contraintes structurent toutes les décisions de ce projet. <strong>Le coût des erreurs est asymétrique</strong> : un faux négatif (métastase manquée) risque un sous-staging — traitement adjuvant manqué, risque de récidive — plus grave qu'un faux positif, qui coûte une relecture. Le pilotage se fait donc par le <strong>rappel</strong>, pas par l'exactitude brute. <strong>La variabilité inter-hôpitaux</strong> est le fil rouge : un modèle performant sur ses hôpitaux d'entraînement peut échouer sur un hôpital nouveau, et le risque principal est qu'il apprenne la signature colorimétrique d'un hôpital plutôt que la morphologie cellulaire. Enfin, <strong>le jeu de données est équilibré (50 % de patchs tumoraux), la clinique ne l'est pas</strong> : les métriques de précision mesurées ici ne se transposent pas telles quelles en déploiement réel.</p>
+
+<p>Trois règles absolues ont été appliquées à chaque étape : le découpage officiel de WILDS par hôpital (jamais un split aléatoire de patchs), vérifié par un garde-fou logiciel (<code>verifier_absence_fuite</code>) qui fait échouer le code si une lame ou une patiente se retrouve partagée entre deux ensembles ; l'hôpital 2 utilisé une seule fois, à la toute fin (Phase 6) ; et toute métrique citée dans ce rapport provenant d'un fichier <code>outputs/metrics/*.json</code> généré par l'exécution réelle du code, jamais estimée de mémoire.</p>
+
+<h1 class="titre-section">2. Données et exploration</h1>
+
+<p>Le pack fourni ne contient aucune image, seulement des métadonnées : 455 954 patchs référencés (50 lames annotées, 43 patientes, 10 lames par hôpital), la liste des 39 000 <code>image_id</code> d'un sous-échantillon équilibré, et <code>stages.csv</code> (classe de chaque lame, stade pN de chaque patiente). Les images ont été reconstruites depuis le miroir Hugging Face du jeu WILDS. Le découpage officiel est strictement aligné sur les hôpitaux : entraînement sur les hôpitaux 0, 3, 4 ; réglages sur l'hôpital 1 (<code>val_ood</code>) ; test sur l'hôpital 2 (<code>test</code>), jamais touché avant la Phase 6. <code>id_val</code> (mêmes hôpitaux que l'entraînement) partage ses lames avec <code>train</code> par construction officielle de WILDS : il est affiché dans ce rapport par transparence mais <strong>jamais interprété</strong>, puisqu'une partie de son score élevé vient de cette fuite, pas d'une vraie validation indépendante.</p>
+
+<p>Trois constats chiffrés ont guidé les choix de prétraitement :</p>
+<ol>
+<li><strong>Le shift de couleur entre hôpitaux est net et mesurable.</strong> Sur 300 patchs par hôpital, la saturation HSV moyenne va de 0,206 (hôpital 4) à 0,379 (hôpital 2) — un facteur 1,8 — et le canal bleu moyen de 0,591 à 0,818.</li>
+<li><strong>Le décalage ne se limite pas à la teinte</strong> : la netteté (variance du Laplacien) a une médiane de 868,7 à l'hôpital 3 contre 3 114,9 à l'hôpital 4 (×3,6), et la part de fond blanc médiane va de 1,0 % à 15,3 % selon l'hôpital.</li>
+<li><strong>Même le jeu « complet » reste proche de l'équilibre</strong> (151 046 patchs non tumoraux pour 151 390 tumoraux sur <code>train</code>) : Camelyon17-WILDS n'échantillonne que les 50 lames annotées, toutes positives — ni ce jeu ni le sous-échantillon ne reflètent la prévalence clinique réelle (discuté quantitativement en section 6). Le nombre de patchs par lame varie par ailleurs de 888 à 61 110, et la part tumorale d'une lame positive de 0,1 % (cellules isolées) à 93 % (macro-métastases).</li>
+</ol>
+
+<figure>
+  <img src="file:///C:/Users/Youcef Lagraa/OneDrive/Bureau/Breast Cancer/Breast_Cancer/outputs/figures/02_histogrammes_couleur.png">
+  <figcaption>Figure 1 — Distributions RGB/HSV par hôpital (300 patchs chacun) : des distributions qui se chevauchent mais restent nettement décalées, en particulier sur la saturation.</figcaption>
+</figure>
+
+<p>Prétraitements retenus : résolution native 96×96 conservée (pas de passage à 224×224, pour aller vite), normalisation ImageNet pour les CNN, augmentations géométriques uniquement en exploration (flips, rotations de 90°) — aucune augmentation de couleur à ce stade, pour ne pas masquer le shift inter-hôpital avant de l'avoir quantifié. Aucune pondération de classe n'était nécessaire (échantillon équilibré à 50/50 partout).</p>
+
+<h1 class="titre-section">3. Modélisation : classification des patchs</h1>
+
+<h2>3.1 Référence simple</h2>
+<p>124 variables par patch (histogrammes RGB et HSV à 16 classes/canal, texture par <em>local binary patterns</em> à deux échelles), régression logistique et forêt aléatoire, réglées exclusivement sur l'hôpital 1.</p>
+
+<table>
+<thead><tr><th>Variante</th><th>Modèle</th><th class="num">AUC <code>val_ood</code> (H1)</th></tr></thead>
+<tbody>
+<tr><td>Couleur seule</td><td>Forêt aléatoire</td><td class="num">0,883</td></tr>
+<tr><td>Texture seule</td><td>Régression logistique</td><td class="num">0,888</td></tr>
+<tr class="highlight"><td>Couleur + texture</td><td>Forêt aléatoire</td><td class="num">0,898</td></tr>
+</tbody>
+</table>
+
+<p>Constat clé : le meilleur modèle tire <strong>83 % de son importance des histogrammes de couleur</strong> (43 % RGB + 40 % HSV) contre 17 % pour la texture — et pourtant, hors des hôpitaux d'entraînement, le modèle <em>texture seule</em> dépasse le modèle <em>couleur seule</em>. Exactement le piège signalé par l'énoncé : apprendre la couleur plutôt que les cellules. Cette référence (0,898 AUC) sert de repère pour juger le CNN.</p>
+
+<h2>3.2 CNN par transfert d'apprentissage</h2>
+<p>ResNet18 pré-entraîné ImageNet, en deux temps : <strong>phase A</strong> (backbone gelé, seule la tête apprend, 6 époques) puis <strong>phase B</strong> (<code>layer3</code>/<code>layer4</code> dégelés, arrêt anticipé). L'essentiel du gain vient de la phase B : l'AUC sur H1 passe de ~0,90-0,915 (phase A) à 0,973-0,978 selon les runs (phase B) — <strong>+0,075 à 0,08 point au-dessus de la référence simple</strong>, un gain net, le CNN dépassant largement même le modèle couleur seule de la référence.</p>
+
+<figure>
+  <img src="file:///C:/Users/Youcef Lagraa/OneDrive/Bureau/Breast Cancer/Breast_Cancer/outputs/figures/05_courbes_cnn.png">
+  <figcaption>Figure 2 — Perte d'entraînement et ROC-AUC sur l'hôpital 1, phases A et B. Le saut survient dès le dégel de <code>layer3</code>/<code>layer4</code>.</figcaption>
+</figure>
+
+<p>Le seuil de décision n'a pas été laissé à 0,5 par défaut : il a été choisi sur H1 pour garantir un rappel ≥ 95 %, conformément au coût asymétrique des erreurs (section 1). <strong>Important</strong> : l'hôpital 1 sert à <em>tous</em> les réglages de ce projet (référence, CNN, seuil, choix de variante anti-shift) — ce n'est pas un hôpital jamais vu. Seul l'hôpital 2 (section 5) l'est réellement.</p>
+
+<h2>3.3 Robustesse au domain shift : une égalité, pas un classement</h2>
+<p>Trois variantes testées avec le même protocole que le CNN de référence : augmentation de couleur (<code>ColorJitter</code>, entraînement seulement), normalisation de coloration (transfert de statistiques de Reinhard en espace LAB, cible calculée sur l'hôpital 0), niveaux de gris.</p>
+
+<table>
+<thead><tr><th>Variante</th><th class="num">AUC H1</th></tr></thead>
+<tbody>
+<tr><td>Baseline (aucune technique)</td><td class="num">0,9734</td></tr>
+<tr><td>Augmentation de couleur</td><td class="num">0,9767</td></tr>
+<tr><td>Normalisation Reinhard</td><td class="num">0,9750</td></tr>
+<tr><td>Niveaux de gris</td><td class="num">0,9644</td></tr>
+</tbody>
+</table>
+
+<p>L'écart entre les trois premières variantes (0,002 à 0,004 point) n'est pas interprétable sur une seule graine, avec des durées d'entraînement inégales (arrêt anticipé à des époques différentes) et un seuil non recalculé pour chacune — au seuil 0,5, l'augmentation de couleur rate d'ailleurs <em>plus</em> de métastases que la baseline (158 contre 123 faux négatifs), malgré une AUC plus haute. <strong>Conclusion : les quatre approches sont statistiquement équivalentes</strong>, à l'exception des niveaux de gris, nettement moins bons sur les deux critères (AUC la plus basse, écart le plus élevé entre hôpitaux d'entraînement et H1) — supprimer la couleur fait perdre un vrai signal sans gagner en généralisation apparente. <strong>La baseline (sans technique anti-shift) a été retenue pour la suite</strong>, choix par défaut qui ne prétend à aucune amélioration non prouvée.</p>
+
+<h1 class="titre-section">4. Du patch à la patiente</h1>
+
+<p>C'est l'objectif principal du sujet. Analyse sur 40 des 50 lames annotées (hôpitaux 0, 1, 3, 4 — l'hôpital 2 n'est pas touché avant la section 5), avec le modèle de référence (Phase 3, calcul local sans GPU). Résolution physique du patch <strong>sourcée</strong> : PatchCamelyon (<code>github.com/basveeling/pcam</code>, dont Camelyon17-WILDS reprend la méthode d'extraction) — acquisition à 40x (0,243 µm/pixel natif), patchs ré-échantillonnés à 10x, soit <strong>0,972 µm/pixel</strong> (un patch de 93,3 µm de côté). Limite assumée : le pas de grille observé entre patchs voisins dans les métadonnées (32 px) est plus fin que la largeur d'un patch (96 px), signe d'un recouvrement non documenté dans le dépôt WILDS ; la conversion mm suppose des patchs jointifs (hypothèse standard PCam), une approximation signalée comme telle.</p>
+
+<h2>4.1 Règles pN : vérifiées formellement</h2>
+<p>Les règles pN simplifiées de CAMELYON17, appliquées aux classes <strong>officielles</strong> des lames, redonnent exactement le stade officiel des 100 patientes de <code>stages.csv</code> — <strong>concordance 100 %</strong>, vérifiée par un <code>assert</code> dans le code.</p>
+
+<h2>4.2 Classe de lame prédite : 27,5 % d'exactitude, et pourquoi</h2>
+<table>
+<thead><tr><th>Officiel \ Prédit</th><th class="num">itc</th><th class="num">micro</th><th class="num">negative</th></tr></thead>
+<tbody>
+<tr><td>itc</td><td class="num">10</td><td class="num">0</td><td class="num">4</td></tr>
+<tr><td>micro</td><td class="num">12</td><td class="num">1</td><td class="num">0</td></tr>
+<tr><td>macro</td><td class="num">4</td><td class="num">9</td><td class="num">0</td></tr>
+</tbody>
+</table>
+
+<p><strong>Aucune lame macro n'est jamais prédite macro</strong> — un biais systématique de sous-estimation de l'étendue tumorale. Deux causes se cumulent : la couverture partielle du sous-échantillon par lame (quelques centaines à quelques milliers de patchs disponibles, contre des dizaines de milliers au total par lame), qui fragmente en points dispersés des zones de métastase pourtant contiguës ; et le rappel imparfait du modèle de référence à l'intérieur même des zones tumorales (de nombreux patchs à l'intérieur des amas de vérité terrain restent prédits à faible probabilité). <strong>La méthode d'agrégation elle-même (composantes connexes, seuils mm, règles pN) est vérifiée et fonctionne</strong> — la limite dominante est la densité de patchs disponibles et la performance du modèle source, pas la logique d'agrégation.</p>
+
+<figure>
+  <img src="file:///C:/Users/Youcef Lagraa/OneDrive/Bureau/Breast Cancer/Breast_Cancer/outputs/figures/08_cartes_lames.png">
+  <figcaption>Figure 3 — Trois lames (itc, micro, macro) : vérité terrain (cerclée de noir) et probabilité prédite par patch. Les amas de vérité denses contiennent encore beaucoup de patchs prédits à faible probabilité.</figcaption>
+</figure>
+
+<h2>4.3 Impact sur le stade pN de la patiente</h2>
+<p>En substituant la classe prédite à la classe officielle sur les lames annotées : <strong>18 stades modifiés sur 34 patientes touchées — et les 18 vont dans le même sens, le sous-staging</strong> (0 sur-staging). Cohérent avec le biais ci-dessus : sous-estimer systématiquement l'étendue tumorale fait mécaniquement sous-estimer le stade — l'erreur la plus grave cliniquement (section 1). Un signal fort qu'avant tout usage, un tel système devrait être calibré pour ne jamais sous-stader, quitte à sur-stader davantage.</p>
+
+<h1 class="titre-section">5. Test unique sur l'hôpital 2</h1>
+
+<p><strong>C'est le seul résultat de ce projet qui mesure une vraie généralisation à un hôpital jamais vu.</strong> Modèle : la baseline (section 3.3), ré-entraînée à l'identique, seuil figé à 0,32 sur H1 (rappel ≥ 95 %) <em>avant</em> de charger l'hôpital 2.</p>
+
+<table>
+<thead><tr><th></th><th class="num">Hôpital 1 (réglages)</th><th class="num">Hôpital 2 (jamais vu)</th></tr></thead>
+<tbody>
+<tr><td>ROC-AUC</td><td class="num">0,978</td><td class="num">0,927</td></tr>
+<tr class="highlight"><td>Rappel au seuil 0,32</td><td class="num">95,05 %</td><td class="num">71,1 %</td></tr>
+<tr><td>Précision au seuil 0,32</td><td class="num">87,6 %</td><td class="num">91,9 %</td></tr>
+<tr class="highlight"><td>Faux négatifs (sur 4 000 patchs tumoraux)</td><td class="num">99</td><td class="num">1 156</td></tr>
+</tbody>
+</table>
+
+<div class="callout alerte">
+<strong>Le seuil réglé sur l'hôpital 1 ne transfère pas sur l'hôpital 2.</strong> 95,05 % de rappel garanti sur H1 ne donne que 71,1 % sur H2 : 1 156 métastases manquées sur 4 000, contre 99 sur H1. La chute de rappel est plus sévère que la seule baisse d'AUC (−0,051 point) ne le suggère : le changement d'hôpital déplace aussi la <strong>calibration</strong> des probabilités prédites, pas seulement leur pouvoir discriminant — à seuil fixe, la précision est même meilleure sur H2 (91,9 % contre 87,6 %), signe que le modèle y devient globalement plus conservateur (spécificité 93,7 % contre 86,5 % sur H1). C'est la démonstration chiffrée, concrète, du risque annoncé dès la section 1 : un seuil réglé sur les hôpitaux disponibles ne garantit rien sur un hôpital réellement nouveau.
+</div>
+
+<h2>5.1 Précision à prévalence clinique réaliste</h2>
+<p>Le sous-échantillon WILDS est équilibré à 50 % ; en clinique, l'immense majorité du tissu est saine. À partir du rappel et de la spécificité mesurés sur H1 (95,05 % et 86,5 %, indépendants de la prévalence du jeu de mesure), règle de Bayes :</p>
+
+<table>
+<thead><tr><th>Prévalence</th><th class="num">Précision attendue</th></tr></thead>
+<tbody>
+<tr><td>50 % (le jeu WILDS lui-même)</td><td class="num">87,6 %</td></tr>
+<tr class="highlight"><td>5 %</td><td class="num">27,0 %</td></tr>
+<tr class="highlight"><td>1 %</td><td class="num">6,6 %</td></tr>
+</tbody>
+</table>
+
+<p><strong>À 1 % de prévalence clinique, plus de 9 alertes sur 10 seraient de fausses alertes</strong> — une conséquence mathématique du déséquilibre réel, pas un défaut du modèle. Un tel système ne peut fonctionner qu'avec un pathologiste qui relit chaque alerte, jamais en autonomie.</p>
+
+<h1 class="titre-section">6. Interprétabilité : Grad-CAM</h1>
+
+<p>Huit patchs de l'hôpital 1 (1 vrai positif, 1 vrai négatif, 3 faux positifs, 3 faux négatifs), modèle final de la section 5.</p>
+
+<figure>
+  <img src="file:///C:/Users/Youcef Lagraa/OneDrive/Bureau/Breast Cancer/Breast_Cancer/outputs/figures/09_gradcam.png">
+  <figcaption>Figure 4 — Image originale (haut) et carte Grad-CAM (bas) pour chaque exemple.</figcaption>
+</figure>
+
+<p><strong>Le biais couleur/texture est réel et visible, pas seulement supposé.</strong> Sur 2 des 3 faux positifs (p = 0,95 et 0,74), l'activation se concentre sur du tissu fibreux rose clair, sans noyau cellulaire net dans la zone chaude — le modèle réagit à une texture de fond, pas à une morphologie tumorale. <strong>Mais ce biais est partiel</strong> : le vrai positif et les 3 faux négatifs activent bien sur des zones denses en noyaux cellulaires, même sous le seuil (0,21 à 0,26 — un signal trop faible plutôt qu'absent), et le 3<sup>e</sup> faux positif (p = 0,89) active sur un véritable amas cellulaire. Cohérent avec l'écart de généralisation mesuré en section 5 : un modèle qui s'appuie en partie sur la texture de fond est d'autant plus vulnérable à un changement d'hôpital.</p>
+
+<h1 class="titre-section">7. IA responsable, discussion et limites</h1>
+
+<h2>7.1 Limites du système</h2>
+<ul>
+<li><strong>Couverture patiente incomplète.</strong> Les 50 lames annotées sont toutes positives et aucune patiente n'a ses 5 ganglions couverts par une annotation — le stade pN complet ne peut être qu'estimé, jamais prédit de bout en bout à partir de ce seul jeu de données.</li>
+<li><strong>Jeu équilibré, réalité clinique déséquilibrée</strong> (sections 2 et 5.1) : la précision attendue en clinique réelle est très inférieure à celle mesurée sur le jeu WILDS.</li>
+<li><strong>Généralisation inter-hôpital imparfaite</strong> (section 5) : le rappel visé (95 %) n'est atteint que sur l'hôpital des réglages, pas sur l'hôpital réellement nouveau (71 %).</li>
+<li><strong>Biais couleur/texture partiel</strong> (section 6), confirmé visuellement sur une partie des erreurs.</li>
+<li><strong>Portée réduite en section 4</strong> (40/50 lames, modèle de référence plutôt que le CNN final, par contrainte de calendrier) — la méthode reste valable avec n'importe quel modèle ou jeu de lames plus complet.</li>
+</ul>
+
+<h2>7.2 Cadre réglementaire et rôle du pathologiste</h2>
+<p>Un tel outil relève d'un dispositif médical logiciel et, au titre du règlement européen sur l'intelligence artificielle (AI Act), d'une application à haut risque dans le domaine de la santé : validation clinique, gestion des risques et <strong>supervision humaine</strong> sont requises. Le système est conçu comme une aide à la décision pour le pathologiste, jamais comme un substitut à sa validation finale — les résultats des sections 5 et 6 (généralisation imparfaite, biais partiel) le confirment concrètement plutôt que par principe.</p>
+
+<h2>7.3 Conclusion</h2>
+<p>Le pipeline complet — du patch à la patiente — a été implémenté et vérifié à chaque étape : prétraitement justifié par les données, référence simple comme garde-fou contre le biais de couleur, CNN apportant un gain réel et mesuré, techniques anti-shift comparées honnêtement (y compris quand le résultat est une égalité), test final unique sur un hôpital jamais vu, interprétabilité qui confirme une partie des risques identifiés en amont. Le résultat le plus important n'est pas un score flatteur mais une limite honnêtement mesurée : la généralisation à un hôpital nouveau reste très inférieure à la performance sur les hôpitaux de réglage, ce qui interdit tout déploiement clinique sans validation locale et supervision humaine systématique.</p>
+
+<h1 class="titre-section">Sources</h1>
+<ul class="sources">
+<li>Challenge CAMELYON17 : camelyon17.grand-challenge.org (données sous licence CC0).</li>
+<li>Bándi P. et al., <em>From detection of individual metastases to classification of lymph node status at the patient level: the CAMELYON17 challenge</em>, IEEE Transactions on Medical Imaging, 2019.</li>
+<li>Koh P. W. et al., <em>WILDS: A Benchmark of in-the-Wild Distribution Shifts</em>, ICML 2021.</li>
+<li>PatchCamelyon (PCam), github.com/basveeling/pcam — résolution physique des patchs.</li>
+<li>Selvaraju R. R. et al., <em>Grad-CAM: Visual Explanations from Deep Networks via Gradient-based Localization</em>, ICCV 2017.</li>
+<li>Reinhard E. et al., <em>Color Transfer between Images</em>, IEEE Computer Graphics and Applications, 2001.</li>
+<li>Dépôt du projet, code et données complètes : github.com/YoucefLgr/Breast_Cancer.</li>
+</ul>
+
+</body>
+</html>
